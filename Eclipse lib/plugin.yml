@@ -1,0 +1,8 @@
+name: EclipseLib
+main: com.Moon_eclipse.EclipseLib.LibMain
+version: 1.0[01\14]
+author: Moon_Eclipse(MCMANY Mincraft Manyserver)
+
+commands:
+  LibMain:
+    description: asd
