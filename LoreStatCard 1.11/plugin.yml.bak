@@ -1,0 +1,8 @@
+name: LoreStatCard
+main: com.Moon_Eclipse.LoreStatCard.main
+version: 1.3[01/04]
+author: Moon_Eclipse(MCMANY Mincraft Manyserver)
+
+commands:
+  lsc:
+    description: /lsc reload, /lsc stat 머리/몸통/다리/발
