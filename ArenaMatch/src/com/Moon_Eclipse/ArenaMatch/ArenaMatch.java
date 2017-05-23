@@ -99,7 +99,6 @@ public class ArenaMatch extends JavaPlugin implements Listener
 {
 	
 	
-	
 	static FileConfiguration userscore;
 	File UserScore;
 	FileConfiguration submap;

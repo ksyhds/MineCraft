@@ -1,0 +1,8 @@
+name: LoreCommand
+main: com.Moon_Eclipse.lorecommand.main
+version: 1.0v
+author: Moon_Eclipse(MCMANY Mincraft Manyserver)
+
+commands:
+  lorecommand:
+    description: /lorecommand reload
