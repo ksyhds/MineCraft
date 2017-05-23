@@ -1,0 +1,59 @@
+# 
+# 아레나이름.submap "이름,에센셜 워프1, 에센션 워프2"
+submap:
+  Default:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - 절강
+    - ps4
+  Plains:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - ''
+  Jungle:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - ''
+  Hell:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - ''
+  Medieval:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - ''
+  Snowy_Mountains:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - ''
+  Cemetery:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - ''
+  Cave:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - ''
+  Sky_island:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - ''
+  Lib:
+    SubMaps:
+    - '마을1,village1-1,village1-2'
+    Rewards:
+    - ''
+  FieldArena:
+    Points:
+    - 'Field1'
+    - 'Field2'
+    - 'Field3'
