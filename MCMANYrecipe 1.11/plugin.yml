@@ -1,0 +1,8 @@
+name: MCMANYrecipe
+main: com.Moon_Eclipse.MCMANYrecipe.main
+version: 1.4 [07.10]
+author: Moon_Eclipse(MCMANY Mincraft Manyserver)
+
+commands:
+  MCrecipe:
+    description: /MCrecipe 리로드, /MCrecipe 디버그

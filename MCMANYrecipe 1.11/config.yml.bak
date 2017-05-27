@@ -1,0 +1,224 @@
+config:
+  a:
+    id: 2
+    meta: 0
+    amount: 1
+    name: '&a1'
+    shape: 'shape'
+    override: 'false'
+    enchants:
+      - '16: 2'
+      - '20: 3'
+    lore:
+      - '&a- &f색상 닉네임을 &e노랑&f색으로 변경합니다.1'
+      - '&7<우클릭시 닉네임의 색상이 적용됩니다.>'
+      - '&4밑줄닉네임 사용 유저는 관리자에게 문의하세요.'
+      - '&8<매니서버 10月 출석체크 이벤트>'
+      - '&f'
+      - '&e기간: &b2015년 11월 01일 - 06시 00분 이후'
+      - '&b아이템의 사용이 불가능하며 일괄 삭제됩니다.'
+      - '&f'
+      - '&4[교환 불가]'
+      - '&a- &fPLAYER님의 귀속 아이템 입니다.'
+    ing1:
+      name: '&aASD'
+      id: 1
+      metadata: 1
+    ing2:
+      name: 'ASD'
+      id: 2
+      metadata: 0
+    ing3:
+      name: 'ASD'
+      id: 3
+      metadata: 0
+    ing4:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing5:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing6:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing7:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing8:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing9:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+  b:
+    id: 2
+    amount: 1
+    name: '&a2'
+    shape: 'shapeless'
+    override: 'false'
+    lore:
+      - '&a- &f색상 닉네임을 &e노랑&f색으로 변경합니다.1'
+      - '&7<우클릭시 닉네임의 색상이 적용됩니다.>'
+      - '&4밑줄닉네임 사용 유저는 관리자에게 문의하세요.'
+      - '&8<매니서버 10月 출석체크 이벤트>'
+      - '&f'
+      - '&e기간: &b2015년 11월 01일 - 06시 00분 이후'
+      - '&b아이템의 사용이 불가능하며 일괄 삭제됩니다.'
+      - '&f'
+      - '&4[교환 불가]'
+      - '&a- &fPLAYER님의 귀속 아이템 입니다.'
+    loc: 1
+    ing1:
+      name: 'ASD'
+      id: 4
+      metadata: 0
+    ing2:
+      name: 'ASD'
+      id: 5
+      metadata: 0
+    ing3:
+      name: 'ASD'
+      id: 6
+      metadata: 0
+    ing4:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing5:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing6:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing7:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing8:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing9:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+  c:
+    id: 2
+    amount: 1
+    name: '&a강화돌'
+    shape: 'furnace'
+    override: 'false'
+    lore:
+      - '&a- &f색상 닉네임을 &e노랑&f색으로 변경합니다.1'
+      - '&7<우클릭시 닉네임의 색상이 적용됩니다.>'
+      - '&4밑줄닉네임 사용 유저는 관리자에게 문의하세요.'
+      - '&8<매니서버 10月 출석체크 이벤트>'
+      - '&f'
+      - '&e기간: &b2015년 11월 01일 - 06시 00분 이후'
+      - '&b아이템의 사용이 불가능하며 일괄 삭제됩니다.'
+      - '&f'
+      - '&4[교환 불가]'
+      - '&a- &fPLAYER님의 귀속 아이템 입니다.'
+    loc: 1
+    ing1:
+      name: 'ASD'
+      id: 7
+      metadata: 0
+    ing2:
+      name: 'ASD'
+      id: 4
+      metadata: 0
+    ing3:
+      name: 'ASD'
+      id: 6
+      metadata: 0
+    ing4:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing5:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing6:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing7:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing8:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+    ing9:
+      name: 'ASD'
+      id: 0
+      metadata: 0
+  d:
+    id: 299
+    amount: 1
+    name: '&7[F] &a가죽 튜닉'
+    shape: 'shape'
+    color: '3220D5'
+    override: 'true'
+    lore:
+      - '&f'
+      - '&f〔 &b이동 속도: &d-4.0% &f〕'
+      - '&f〔 &b마법 부여: &7없음 &f〕'
+      - '&f'
+      - '&f( &3피해 흡수: &d+3.2% &f)'
+      - '&f'
+      - '&0[&8PLAYER&0]&7님이 제작한 아이템입니다.'
+    ing1:
+      name: ''
+      id: 334
+    ing3:
+      name: ''
+      id: 334
+    ing4:
+      name: ''
+      id: 334
+    ing5:
+      name: ''
+      id: 334
+    ing6:
+      name: ''
+      id: 334
+    ing7:
+      name: ''
+      id: 334
+    ing8:
+      name: ''
+      id: 334
+    ing9:
+      name: ''
+      id: 334
+  e:
+    id: 299
+    amount: 1
+    name: '&7[F] &a가죽 튜닉'
+    shape: 'shape'
+    color: '3220D5'
+    override: 'false'
+    lore:
+      - '&f'
+      - '&f〔 &b이동 속도: &d-4.0% &f〕'
+      - '&f〔 &b마법 부여: &7없음 &f〕'
+      - '&f'
+      - '&f( &3피해 흡수: &d+3.2% &f)'
+      - '&f'
+      - '&0[&8PLAYER&0]&7님이 제작한 아이템입니다.'
+    ing1:
+      name: 'asd'
+      id: 2
+
