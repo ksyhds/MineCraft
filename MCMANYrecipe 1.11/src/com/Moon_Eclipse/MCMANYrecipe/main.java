@@ -68,9 +68,13 @@ public class main extends JavaPlugin implements Listener
 						this.debugint = 0;
 					break;
 				}
-				if (PloRecipeList.isnull())
+				if (ShapedRecipes.isEmpty())
 				{
-					sender.sendMessage("[MCrecipe] 3개의 레시피 배열중 하나 혹은 모두가 비었습니다.");
+					sender.sendMessage("등록된 정규식 레시피가 없습니다.");
+				}
+				else if( ShapelessRecipes.isEmpty())
+				{
+					sender.sendMessage("등록된 비정규식 레시피가 없습니다.");
 				}
 			}
 			if ((command.getName().equalsIgnoreCase("MCrecipe")) && (args[0].equals("받기")))
@@ -121,7 +125,7 @@ public class main extends JavaPlugin implements Listener
 	}
 	public ItemStack createItem(int typeId,int metadata, int amount, String name, List<String> lore, String color, List<String> enchants)
 	{
-		ItemStack i = new ItemStack(typeId, amount,(short) 0,(byte) metadata);
+		ItemStack i = new ItemStack(typeId, amount,(short) metadata);
 		ItemMeta im = i.getItemMeta();
 		String ColorHex = color;
 		try
@@ -182,7 +186,7 @@ public class main extends JavaPlugin implements Listener
 			}
 			if(c.getString(key +".shape").equals("shape"))
 			{			
-				ItemStack item = this.createItem(c.getInt(key + ".id"), c.getInt(key + ".meta"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"));
+				ItemStack item = this.createItem(c.getInt(key + ".id"), c.getInt(key + ".metadata"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"));
 				PloRecipe pl = new PloRecipe(item);
 
 				
@@ -247,7 +251,7 @@ public class main extends JavaPlugin implements Listener
 			if(c.getString(key +".shape").equals("shapeless"))
 			{
 				
-				ItemStack item = this.createItem(c.getInt(key + ".id"), c.getInt(key + ".meta"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"));
+				ItemStack item = this.createItem(c.getInt(key + ".id"), c.getInt(key + ".metadata"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"));
 				MoonShapeLessRecipe pl = new MoonShapeLessRecipe(item);
 				
 				ItemStack ing1 = new ItemStack(0);

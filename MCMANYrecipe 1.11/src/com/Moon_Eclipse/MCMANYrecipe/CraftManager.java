@@ -6,11 +6,12 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -22,8 +23,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.Moon_eclipse.EclipseLib.LibMain;
 
-import net.minecraft.server.v1_11_R1.NBTTagCompound;
-import net.minecraft.server.v1_11_R1.NBTTagList;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagList;
 
 public class CraftManager implements Listener {
 	HashMap<String, String> truthmap = new HashMap<String, String>();
@@ -35,8 +36,19 @@ public class CraftManager implements Listener {
 	public void preCraftEvent(PrepareItemCraftEvent event)
 	{
 		Player p = (Player) event.getView().getPlayer();
-		ItemStack[] CraftItems = event.getInventory().getMatrix();
+		ItemStack[] CraftItems = event.getInventory().getContents();
+		ItemStack Output = CraftItems[0];
 		String invType = event.getInventory().getType().toString();
+		CraftItems = ReValueMatrix(CraftItems,invType);
+		if(main.Debug())
+		{
+			for(ItemStack is : CraftItems)
+			{
+				Bukkit.getPlayer("Moon_Eclipse").sendMessage("조합 아이템: " + is.toString());
+			}	
+		}
+		
+		
 		/*
 		Bukkit.broadcastMessage("조합 이벤트 발생.");
 		if(invType.equals("WORKBENCH"))
@@ -209,10 +221,10 @@ public class CraftManager implements Listener {
 			if(this.ingHasDisname(CraftItems))
 			{
 				if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("모든 조합재료에 디스플레이 이름이 있음");}
-				ItemStack output = event.getRecipe().getResult();
+				
 				for(ItemStack item : main.ShapedRecipes.keySet())
 				{
-					if(item.equals(output))
+					if(item.equals(Output))
 					{
 						if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("레시피의 출력과 서버 출력이 일치함");}
 						//Bukkit.broadcastMessage(item.toString());
@@ -327,34 +339,34 @@ public class CraftManager implements Listener {
 		//Bukkit.broadcastMessage(e.getResult().toString() + "결과");
 		}catch(Exception exce){}
 	}
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void oncraft(CraftItemEvent e)
-	{		
-		boolean cantgo = false;
-		if(e.isShiftClick())
-		{//Bukkit.broadcastMessage("이벤트 발생");
-			for (PloRecipe recipe : PloRecipeList.getShapedRecipes())
+	{
+		ItemStack output = e.getCurrentItem();
+		if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("이벤트 형식" + e.getAction().toString());}
+		if(e.isShiftClick() || e.getAction().toString().equalsIgnoreCase("MOVE_TO_OTHER_INVENTORY"))
+		{
+			/*
+			ItemStack Temp_item = LibMain.ReCreateItem(output);			
+			if(main.ShapedRecipes.keySet().contains(Temp_item))
 			{
-				if(e.getCurrentItem().equals(recipe.getOutput()))
-				{
-					e.setCancelled(true);
-					cantgo = true;
-				}
+				if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("형식 있는 조합에서 이벤트 캔슬");}
+				e.setCancelled(true);
 			}
-			for(MoonShapeLessRecipe recipe : PloRecipeList.getShapelessRecipes())
+			else if(main.ShapelessRecipes.keySet().contains(Temp_item))
 			{
-				if(e.getCurrentItem().equals(recipe.getOutput()))
-				{
-					e.setCancelled(true);
-				}
+				if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("형식 없는 조합에서 이벤트 캔슬");}
+				e.setCancelled(true);
 			}
+			*/
+			e.setCancelled(true);
 		}
 		else
 		{
 			Player p = (Player) e.getWhoClicked();
 			try
 			{
-				ItemStack is = e.getCurrentItem();
+				ItemStack is = output;
 				ItemMeta im = is.getItemMeta();
 				ArrayList<String> ls = new ArrayList<String>();
 				//Bukkit.broadcastMessage(im.getLore().size() + "<< 가지고있는 로어의 수량");
@@ -368,10 +380,9 @@ public class CraftManager implements Listener {
 			is.setItemMeta(im);
 			}catch(Exception e1){}
 			
-			e.setCurrentItem(LibMain.hideFlags_Unbreak(e.getCurrentItem()));
+			e.setCurrentItem(LibMain.hideFlags_Unbreak(output));
 			
 		}
-		
 	}
 	@EventHandler
 	public void onquit(PlayerQuitEvent e)
@@ -538,5 +549,21 @@ public class CraftManager implements Listener {
 			}
 		}
 		return is;
+	}
+	public ItemStack[] ReValueMatrix(ItemStack[] craft, String index)
+	{
+		
+		int max = 9;
+		if(index.equalsIgnoreCase("CRAFTING"))
+		{
+			max = 4;
+		}
+		ItemStack[] mat = new ItemStack[max];
+		for(int i = 0 ; i < max ; i++)
+		{
+			mat[i] = craft[i+1];
+		}
+		
+		return mat;
 	}
 }
