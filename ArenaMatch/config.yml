@@ -67,4 +67,6 @@ config:
     - §a▶ §f지급되는 §b전리품§f은 §3랭크 포인트§f에 따라 차등 지급됩니다.
     - §f
     - '§b▶ §f현재 랭크 포인트: §f【 §e<CompititionPoint>§3RP §f】'
+    - '§b▶ §f당신은 현재 상위 <RankingPercentString>% 유저 입니다.'
+    
     - §b▶ §f이때까지 §4<CompititionWinCount>§f명의 점수를 떨어트렸습니다!

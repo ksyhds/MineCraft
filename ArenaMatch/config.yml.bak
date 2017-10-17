@@ -54,7 +54,6 @@ config:
     - §a▶ §b승리§f시 §e30골드§f를, §c패배§f시 §e10골드§f를 얻습니다.
     - §a▶ §f또한 §b3승§f마다 §5일반 아레나 복권§f을 추가로 얻습니다.
     - §f
-    - '§b▶ §f현재 승리 횟수: §f【 <DefaultWinString> 】'
     - §b▶ §f일반 아레나에서 §4<DefaultWinCount>§f명에게 §e10골드§f를 선물했습니다!
   CompititionIcon:
     id: 330
@@ -68,4 +67,6 @@ config:
     - §a▶ §f지급되는 §b전리품§f은 §3랭크 포인트§f에 따라 차등 지급됩니다.
     - §f
     - '§b▶ §f현재 랭크 포인트: §f【 §e<CompititionPoint>§3RP §f】'
+    - '§b▶ §당신은 현재 상위 <RankingPercentString>% 유저 입니다.'
+    
     - §b▶ §f이때까지 §4<CompititionWinCount>§f명의 점수를 떨어트렸습니다!
