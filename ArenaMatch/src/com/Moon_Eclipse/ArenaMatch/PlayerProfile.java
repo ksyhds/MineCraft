@@ -61,6 +61,8 @@ public class PlayerProfile
 			
 			lore = ArenaMatch.ChangeString("<CompititionWinCount>", userscore.getInt("userscore." + p.getName() + ".WinCount")+"", lore);
 			lore = ArenaMatch.ChangeString("<CompititionPoint>", userscore.getInt("userscore." + p.getName() + ".Score")+"", lore);
+			lore = ArenaMatch.ChangeString("<RankingPercentString>", ArenaMatch.get_User_Per_Score(p)+"", lore);
+			
 			try {
 				lore = ArenaMatch.ChangeString("<money>", (int) vault.getMoney(p.getName())+"", lore);
 			} catch (UserDoesNotExistException e) {
@@ -174,7 +176,7 @@ public class PlayerProfile
 	&f( &4치명타 피해: &d+@% &f) - 기본 50%
 	&f( &6생명력 흡수: &d+@% &f)
 	&f( &c플레이어 추가 피해: &d+@ - +@ &f)
-	&f( &c몬스터 추가 피해: &d+@ - +@ &f)
+	&f( &c몬스터 피해: &d+@ - +@ &f)
 	&f
 	&a▶ &3방어
 	&f( &3피해 감소: &d+@% &f)
@@ -209,7 +211,7 @@ public class PlayerProfile
 		 * 치명타 피해		5
 		 * 생명력 흡수		6
 		 * 플레이어 추가 피해	7 - 8
-		 * 몬스터 추가 피해	9 - 10
+		 * 몬스터 피해	9 - 10
 		 * 
 		 * 피해 감소		11
 		 * 추가 생명력		12

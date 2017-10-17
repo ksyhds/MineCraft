@@ -33,6 +33,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -97,8 +98,7 @@ import com.Moon_Eclipse.MCMANYtitle.*;
 
 public class ArenaMatch extends JavaPlugin implements Listener
 {
-	
-	
+
 	static FileConfiguration userscore;
 	File UserScore;
 	FileConfiguration submap;
@@ -111,6 +111,8 @@ public class ArenaMatch extends JavaPlugin implements Listener
 	File PartyFile;
 	static FileConfiguration guild;
 	File GuildFile;
+	static FileConfiguration tier;
+	File TierFile;
 	
 	Configuration c;
 	
@@ -176,6 +178,7 @@ public class ArenaMatch extends JavaPlugin implements Listener
 		this.saveDefaultTitle();
 		this.saveDefaultPartyFile();
 		this.saveDefaultGuildFile();
+		this.saveDefaultTierFile();
 		
 		c = this.getConfig();
 		this.GetGUIIcon();
@@ -198,6 +201,9 @@ public class ArenaMatch extends JavaPlugin implements Listener
 		
 		GuildFile = new File(getDataFolder(), "guild.yml");
 		guild = YamlConfiguration.loadConfiguration(GuildFile);
+		
+		TierFile = new File(getDataFolder(), "tier.yml");
+		tier = YamlConfiguration.loadConfiguration(TierFile);
 		
 		getEconomy();
 		InitializeArena();
@@ -340,6 +346,9 @@ public class ArenaMatch extends JavaPlugin implements Listener
 								party = YamlConfiguration.loadConfiguration(PartyFile);
 								GuildFile = new File(getDataFolder(), "guild.yml");
 								guild = YamlConfiguration.loadConfiguration(GuildFile);
+								TierFile = new File(getDataFolder(), "tier.yml");
+								tier = YamlConfiguration.loadConfiguration(TierFile);
+								
 								p.sendMessage("리로드 완료");
 							}
 							else
@@ -1171,6 +1180,7 @@ public class ArenaMatch extends JavaPlugin implements Listener
 	{
 		Player p = event.getPlayer(); 
 		PreviousStat.put(p.getName(), "JOIN");
+		p.getInventory().setHeldItemSlot(ran.nextInt(9));
 		p.playSound(p.getLocation(), Sound.RECORD_CHIRP, SoundCategory.RECORDS, 100000, 1);
 		InitializeUserValues(p.getName());
 		if(!userscore.contains("userscore." + p.getName() + ".Score"))
@@ -1554,7 +1564,7 @@ public class ArenaMatch extends JavaPlugin implements Listener
 			 * 이동 속도		0
 			 * 
 			 * 추가 피해		1 - 2
-			 * 방어 무시		3
+			 * 방어 무시 피해	3
 			 * 치명타 확률		4
 			 * 치명타 피해		5
 			 * 생명력 흡수		6
@@ -1593,22 +1603,36 @@ public class ArenaMatch extends JavaPlugin implements Listener
 				Player p = (Player) damager;
 				Player target2 = (Player) target;
 				double[] Damager_StatInfo= new double[23];
-				double[] Targer_StatInfo= new double[23];
+				double[] Target_StatInfo= new double[23];
 				
+
 				// 아래는 데미지 감소 코드
-				Targer_StatInfo = pp.getstat(target2, Targer_StatInfo);
-				event.setDamage(damage - Targer_StatInfo[15]);
+				Target_StatInfo = pp.getstat(target2, Target_StatInfo);
+				event.setDamage(damage - Target_StatInfo[15]);
 				
 				// 아래는 데미지 증가 코드
 				Damager_StatInfo = pp.getstat(p, Damager_StatInfo);
-				target2.damage(Damager_StatInfo[3]);;
+				target2.damage(Damager_StatInfo[3]);
 				if(target2.isBlocking())
 				{
 					target2.damage(damage/3);
 				}	
 				
+				int AddtiveDamageOffset = (int)Damager_StatInfo[8] - (int)Damager_StatInfo[7];
+				
+				if(AddtiveDamageOffset > 0)
+				{
+					int AddtiveDamageToPlayer = ran.nextInt(AddtiveDamageOffset)+(int)Damager_StatInfo[7];
+					damage += (double)AddtiveDamageToPlayer;
+					event.setDamage(damage);
+					//Bukkit.broadcastMessage("데미지: " + event.getDamage());
+					
+				}
+				
+				this.BloodSuck(p, target2, Damager_StatInfo, event.getDamage());
+				
 			}
-			else if(damager instanceof Player && target instanceof Creature)
+			else if(damager instanceof Player && (target instanceof Creature || target instanceof Slime))
 			{
 
 				double[] Player_StatInfo = new double[30];
@@ -1633,6 +1657,9 @@ public class ArenaMatch extends JavaPlugin implements Listener
 				damage -= DownCase_Player_Damage;
 				event.setDamage(damage);
 				
+				//아래는 플레이어에 의한 데미지 추가 코드
+				((LivingEntity)target).damage(Player_StatInfo[3]);
+				
 				//아래는 공격원이 화살일 경우 데미지 변경 코드
 				if(event.getCause().toString().equals("PROJECTILE"))
 				{
@@ -1640,27 +1667,22 @@ public class ArenaMatch extends JavaPlugin implements Listener
 					damage -= DownCase_Arrow_Damage;
 					event.setDamage(damage);
 				}
+				
+				//아래는 흡혈 코드
+				this.BloodSuck((LivingEntity)damager, (LivingEntity)target, Player_StatInfo, event.getDamage());
 			}
-			else if(damager instanceof Creature && target instanceof Player)
+			else if((damager instanceof Creature || damager instanceof Slime) && target instanceof Player)
 			{
 				
 				double[] Monster_StatInfo = new double[30];
 				Monster_StatInfo = pp.getstat((LivingEntity)damager, Monster_StatInfo);
+				
+				
+				
+				
+				// 아래는 플레이어 추가 데미지 코드
+				
 				int AddtiveDamageOffset = (int)Monster_StatInfo[8] - (int)Monster_StatInfo[7];
-				
-				
-				double health = ((LivingEntity)damager).getHealth();
-				double UpHealth = damage * (Monster_StatInfo[6] / 100);
-				
-				double Maxhealth = ((LivingEntity)damager).getMaxHealth();
-				if((health+UpHealth) > Maxhealth)
-				{
-					((LivingEntity)damager).setHealth(Maxhealth);
-				}
-				else
-				{
-					((LivingEntity)damager).setHealth(health + UpHealth);
-				}
 				
 				if(AddtiveDamageOffset > 0)
 				{
@@ -1686,7 +1708,7 @@ public class ArenaMatch extends JavaPlugin implements Listener
 					damage -= DownCase_Arrow_Damage;
 					event.setDamage(damage);
 				}
-				
+				this.BloodSuck((LivingEntity)damager, (LivingEntity)target, Monster_StatInfo, event.getDamage());
 			}
 			
 			
@@ -2038,25 +2060,27 @@ public class ArenaMatch extends JavaPlugin implements Listener
 	{
 		int QueueNumber = 0;
 		int EstimateScore = PlayerScore/100;
+		String ScoreString = String.valueOf(EstimateScore);
 		
-		switch(EstimateScore)
+		Set<String> keys = tier.getConfigurationSection("tier.rank_tier").getKeys(false);
+		for(String key : keys)
 		{
-			case 0: case 1: case 2:
-			QueueNumber = 0;
-			break;
-			case 3: case 4: case 5:
-				QueueNumber = 1;
+			List<String> range = tier.getStringList("tier.rank_tier." + key);
+			if(key.equalsIgnoreCase("range_out"))
+			{
 				break;
-			case 6: case 7: case 8: case 9:
-				QueueNumber = 2;
+			}
+			else if(range.contains(ScoreString))
+			{
 				break;
-			case 10: 
-				QueueNumber = 3;
-				break;
-			default:
-				QueueNumber = 3;
-			 break;
+			}
+			else
+			{
+				QueueNumber += 1;
+				continue;
+			}
 		}
+		
 		return QueueNumber;
 	}
 	public int getPlayerDefaultQueueNumber(int PlayerScore)
@@ -2064,14 +2088,15 @@ public class ArenaMatch extends JavaPlugin implements Listener
 		int QueueNumber = 0;
 		int EstimateScore = PlayerScore/100;
 		
-		switch(EstimateScore)
+		String ScoreString = String.valueOf(EstimateScore);
+		List<String> range = tier.getStringList("tier.default_tier.tier1");
+		if(range.contains(ScoreString))
 		{
-			case 0: case 1: case 2:
 			QueueNumber = -1;
-			break;
-			default:
-				QueueNumber = -2;
-			 break;
+		}
+		else
+		{
+			QueueNumber = -2;
 		}
 		return QueueNumber;
 	}
@@ -2177,13 +2202,20 @@ public class ArenaMatch extends JavaPlugin implements Listener
 				e.printStackTrace();
 			}
 			
-			List<String> items = submap.getStringList("submap." + UseArena.get(winner.getName()) + ".Rewards");
+			List<String> Winner_items = submap.getStringList("submap." + UseArena.get(winner.getName()) + ".Rewards");
+			List<String> Loser_items = submap.getStringList("submap." + UseArena.get(winner.getName()) + ".Loser_Rewards");
 			
-			
-			for(String item : items)
+			for(String item : Winner_items)
 			{
 				main.give(winner, item, WinnerMultiplier);
 			}
+			
+			for(String item : Loser_items)
+			{
+				main.give(loser, item, LoserMultiplier);
+			}
+			
+			
 			
 			winner.sendMessage("§b[마인아레나] §e전투에서 승리하여 복권 §3" + WinnerMultiplier + "§e개와 §3" + WinnerCoin +"§e골드를 획득하였습니다.");
 			loser.sendMessage("§b[마인아레나] §e전투에서 패배하여 §3" + LoserCoin + "§e골드를 획득하였습니다.");
@@ -2191,7 +2223,7 @@ public class ArenaMatch extends JavaPlugin implements Listener
 		else if(UserArenaState.get(winner.getName()).equals("Default"))
 		{
 			
-			List<String> items = submap.getStringList("submap." + UseArena.get(winner.getName()) + ".Rewards");
+			List<String> items = submap.getStringList("submap." + UseArena.get(winner.getName()) + ".Default_Rewards");
 			
 			for(String item : items)
 			{
@@ -2603,9 +2635,10 @@ public class ArenaMatch extends JavaPlugin implements Listener
 		int moduleDefualtWinCount = userscore.getInt("userscore." + p.getName() + ".DeWinCount") % 3;
 		DefaultIconLore2 = ChangeString("<DefaultWinString>", this.getDefaultWinCount(moduleDefualtWinCount) , DefaultIconLore2); 
 		
+		double percent_rank = get_User_Per_Score(p);
 		List<String> CompititionIconLore2 = ChangeString("<CompititionWinCount>", userscore.getInt("userscore." + p.getName() + ".WinCount")+"", CompititionIconLore);
 		CompititionIconLore2 = ChangeString("<CompititionPoint>", userscore.getInt("userscore." + p.getName() + ".Score")+"", CompititionIconLore2);
-		
+		CompititionIconLore2 = ChangeString("<RankingPercentString>", percent_rank+"" , CompititionIconLore2); 
 		UserCompititionLore.put(p.getName(), CompititionIconLore2);
 		UserDefaultLore.put(p.getName(), DefaultIconLore2);
 		
@@ -3102,6 +3135,28 @@ public class ArenaMatch extends JavaPlugin implements Listener
         }
         return vault;
     }
+	public void saveTierFile()
+	{
+		try 
+		{
+			tier.save(TierFile);
+	    }
+		catch (IOException ex)
+		{
+	        getLogger().log(Level.SEVERE, "Could not save config to " + TierFile, ex);
+	    }
+	}
+	public void saveDefaultTierFile()
+	{
+		   if (TierFile == null)
+		   {
+			   TierFile = new File(getDataFolder(), "tier.yml");
+		   }
+		   if (!TierFile.exists())
+		   {            
+			   this.saveResource("tier.yml", true);
+		   }
+	}
 	public static Economy getPluginEconomy()
 	{
 		return vault;
@@ -3134,6 +3189,21 @@ public class ArenaMatch extends JavaPlugin implements Listener
 			}
 		}
 		return true;
+	}
+	public void BloodSuck(LivingEntity Damager, LivingEntity Target, double[] Damager_StatInfo, double damage)
+	{
+		double health = Damager.getHealth();
+		double UpHealth = damage * (Damager_StatInfo[6] / 100);
+		
+		double Maxhealth = Damager.getMaxHealth();
+		if((health+UpHealth) > Maxhealth)
+		{
+			Damager.setHealth(Maxhealth);
+		}
+		else
+		{
+			Damager.setHealth(health + UpHealth);
+		}
 	}
 	public void ToolRepair(Player p)
 	{
@@ -3279,7 +3349,8 @@ public class ArenaMatch extends JavaPlugin implements Listener
 	}
 	public String[] getPlayerValues(String name)
 	{
-		String[] values = new String[14];
+		String[] values = new String[16];
+		
 		values[0] = "매치 안에 있음: " + IsinMatch.get(name);
 		values[1] = "리스트 안에 있음: "+IsinList.get(name);
 		values[2] = "거부 목록에있음: "+REjectList.get(name);
@@ -3297,6 +3368,10 @@ public class ArenaMatch extends JavaPlugin implements Listener
 			values[12] = "현재 GUI ANIMATION TASK NUMBER: "+GUIAnimationTask.get(name).getTaskId();
 		}
 		values[13] = "현재 유저의 채팅 상태: " + UserChatState.get(name);
+		
+		int score = userscore.getInt("userscore." + name + ".Score");
+		values[14] = "현재 유저의 경쟁 티어: " + getPlayerRankQueueNumber(score);
+		values[15] = "현재 유저의 일반 티어: " + getPlayerDefaultQueueNumber(score);
 		return values;
 		
 	}
@@ -3382,6 +3457,34 @@ public class ArenaMatch extends JavaPlugin implements Listener
 			break;
 		}
 		return WinString;
+	}
+	public static double get_User_Per_Score(Player p)
+	{
+		double per_score = 0;
+
+		Set<String> UserSet = userscore.getConfigurationSection("userscore").getKeys(false);
+		int size_of_UserSet = UserSet.size();
+		
+		HashMap<String,Integer> map = new HashMap<String,Integer>();
+		
+		for(String key : UserSet)
+		{
+			int score = userscore.getInt("userscore."+ key + ".Score");
+			map.put(key, score);
+		}
+		List<String> RankList = sortByValue(map);
+		int rank = 1;
+		for(String name2 : RankList)
+		{
+			if(name2.equals(p.getName()))
+			{
+
+				per_score = (rank*1.0/size_of_UserSet)*100;
+				break;
+			}
+			rank++;
+		}
+		return Double.parseDouble(String.format("%.1f",per_score));
 	}
 	public void disableMusic(Player p)
 	{
