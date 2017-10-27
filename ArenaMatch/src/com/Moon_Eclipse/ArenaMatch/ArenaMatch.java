@@ -41,6 +41,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -1798,6 +1799,12 @@ public class ArenaMatch extends JavaPlugin implements Listener
 				Bukkit.dispatchCommand(p, "c spawn ");
 			}
 		}
+	}
+	@EventHandler
+	public void onBlockPlaced(BlockPlaceEvent event) 
+	{
+		Player p = event.getPlayer();
+		Bukkit.dispatchCommand(p, "c spawn ");
 	}
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onChat(AsyncPlayerChatEvent event)

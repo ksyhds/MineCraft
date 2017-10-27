@@ -176,7 +176,7 @@ public class PlayerProfile
 	&f( &4치명타 피해: &d+@% &f) - 기본 50%
 	&f( &6생명력 흡수: &d+@% &f)
 	&f( &c플레이어 추가 피해: &d+@ - +@ &f)
-	&f( &c몬스터 피해: &d+@ - +@ &f)
+	&f( &c몬스터 피해: &d+@ &f)
 	&f
 	&a▶ &3방어
 	&f( &3피해 감소: &d+@% &f)
@@ -211,8 +211,8 @@ public class PlayerProfile
 		 * 치명타 피해		5
 		 * 생명력 흡수		6
 		 * 플레이어 추가 피해	7 - 8
-		 * 몬스터 피해	9 - 10
-		 * 
+		 * 몬스터 피해		9     
+		 * 				10번은 본래 몬스터 피해의 최대범위 표현인자였으나 차후 수정에 의해 제거되고 몬스터 피해는 단일 피해가 됨. 17.10.27
 		 * 피해 감소		11
 		 * 추가 생명력		12
 		 * 생명력 재생		13
@@ -265,9 +265,9 @@ public class PlayerProfile
 		{
 			stats.add("§f( §c플레이어 피해: §d" + PlusMinus(StatInfo[7], true) + " - " + PlusMinus(StatInfo[8], true) + " §f)");
 		}
-		if((StatInfo[9] + StatInfo[10]) != 0d)
+		if((StatInfo[9] /*+ StatInfo[10]*/) != 0d)
 		{
-			stats.add("§f( §c몬스터 피해: §d" + PlusMinus(StatInfo[9], true) + " - " + PlusMinus(StatInfo[10], true) + " §f)");
+			stats.add("§f( §c몬스터 피해: §d" + PlusMinus(StatInfo[9], true)/* + " - " + PlusMinus(StatInfo[10], true)*/ + " §f)");
 		}
 		stats.add("§f");
 		stats.add("§a▶ §3방어");
@@ -524,9 +524,12 @@ public class PlayerProfile
 				case 7:
 					if(!isOffHand)
 					{
+						/*
 						double[] ranges = this.Range(StatInfo[9], StatInfo[10], lore);
 						StatInfo[9] = ranges[0];
 						StatInfo[10] = ranges[1];
+						*/
+						StatInfo[9] = this.nonRange(StatInfo[9], lore, false);
 					}
 					break;
 				case 8:
