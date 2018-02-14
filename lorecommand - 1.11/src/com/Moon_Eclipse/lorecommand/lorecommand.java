@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -12,22 +14,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import com.sun.media.sound.AiffFileReader;
-
-import net.minecraft.server.v1_11_R1.ItemAir;
-import net.minecraft.server.v1_11_R1.Material;
-
-public class main extends JavaPlugin implements Listener{
+public class lorecommand extends JavaPlugin implements Listener{
 	Configuration c;
 	HashMap<String,Long> cooldowns = new HashMap<String,Long>();
 	HashMap<String,Long> timer = new HashMap<String,Long>();
@@ -63,15 +57,29 @@ public class main extends JavaPlugin implements Listener{
 	public void onRightclick(PlayerInteractEvent event)
 	{
 		Player p = event.getPlayer();
-		
-		if(!(event.getPlayer().getItemInHand().getType().toString().equals("AIR"))  && (p.isSneaking() && event.getAction().equals(event.getAction().LEFT_CLICK_AIR) || p.isSneaking() && event.getAction().equals(event.getAction().LEFT_CLICK_BLOCK) || p.isSneaking() && event.getAction().equals(event.getAction().PHYSICAL)))
+		Material bl = event.getMaterial();
+		if(!bl.isBlock())
 		{
-			this.Run(p);
+			if(!(event.getPlayer().getItemInHand().getType().toString().equals("AIR")) 
+					&& !p.isSneaking() 
+					&& (event.getAction().equals(event.getAction().RIGHT_CLICK_AIR) 
+					|| event.getAction().equals(event.getAction().RIGHT_CLICK_BLOCK) 
+					|| event.getAction().equals(event.getAction().PHYSICAL)))
+			{
+				this.Run2(p);
+			}
+			else if(!(event.getPlayer().getItemInHand().getType().toString().equals("AIR"))  
+					&& (p.isSneaking() 
+					&& event.getAction().equals(event.getAction().LEFT_CLICK_AIR) 
+					|| p.isSneaking() && event.getAction().equals(event.getAction().LEFT_CLICK_BLOCK) 
+					|| p.isSneaking() && event.getAction().equals(event.getAction().PHYSICAL)))
+			{
+				this.Run(p);
+			}
+				
+				
 		}
-		if(!(event.getPlayer().getItemInHand().getType().toString().equals("AIR")) && !p.isSneaking() && (event.getAction().equals(event.getAction().RIGHT_CLICK_AIR) || event.getAction().equals(event.getAction().RIGHT_CLICK_BLOCK) || event.getAction().equals(event.getAction().PHYSICAL)))
-		{
-			this.Run2(p);
-		}
+
 	}
 	@EventHandler
 	public void ondamageevent(EntityDamageByEntityEvent event)
@@ -129,7 +137,6 @@ public class main extends JavaPlugin implements Listener{
 										//Bukkit.broadcastMessage(cooldowns.get(p.getName()) + " < " + (System.currentTimeMillis() - seconds*1000) + "" );
 										//Bukkit.broadcastMessage("조건문 통과");
 										
-										this.SetTimer(p, seconds, search);
 										if(Cosec != 0)
 										{
 											this.SetShareTimer(p, Cosec);
@@ -160,6 +167,7 @@ public class main extends JavaPlugin implements Listener{
 									p.sendMessage("§b[마인아레나]§e 공용 재사용 대기시간이 " + leftsecondShare.get(p.getName()) + "s 남았습니다.");
 								}
 							}
+							
 							if(iscooled.get(p.getName() + search))
 							{
 								if(p.getFoodLevel() >= c.getInt(key + ".hunger"))
