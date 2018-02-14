@@ -13,6 +13,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.FurnaceBurnEvent;
+import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
@@ -232,9 +234,10 @@ public class CraftManager implements Listener {
 						ItemStack[] RecipeItems = main.ShapedRecipes.get(item);
 						if(ingShapedMatch(RecipeItems, CraftItems))
 						{
-							event.getInventory().setResult(item);
+							event.getInventory().setResult(LibMain.hideFlags_Unbreak(item));
 							if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("셰입이 매치하므로 아이템 설정");}
-							break;
+							return;
+							
 						}
 						else
 						{
@@ -251,29 +254,27 @@ public class CraftManager implements Listener {
 						ItemStack[] RecipeItems = main.ShapelessRecipes.get(item);
 						if(ingShapelessMatch(RecipeItems, CraftItems))
 						{
-							event.getInventory().setResult(item);
+							event.getInventory().setResult(LibMain.hideFlags_Unbreak(item));
 							if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("셰입이 매치하므로 아이템 설정");}
-							break;
+							return;
 						}
 						else
 						{
 							event.getInventory().setResult(new ItemStack(Material.AIR));
 							//if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("셰입이 매치하지 않으므로 아이템 지움");}
 						}
-				}
+				}				
 			}
 			else
 			{
 				if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("조합하려는 아이템에 이름이 없음");}
 				for(ItemStack item : main.ShapedRecipes.keySet())
 				{
-
 					ItemStack[] RecipeItems = main.ShapedRecipes.get(item);
 					if(isThisCustomRecipe_Shapeless(RecipeItems, CraftItems));
 					{
 						event.getInventory().setResult(new ItemStack(Material.AIR));
 					}
-				
 				}
 				for(ItemStack item : main.ShapelessRecipes.keySet())
 				{
@@ -284,60 +285,53 @@ public class CraftManager implements Listener {
 					}
 				}
 			}
+			
 		//}
 	}
 
 	@EventHandler
 	public void onburnevent(FurnaceSmeltEvent e)
 	{
-		try
+		e.setCancelled(true);
+		//Bukkit.broadcastMessage("Event Fire - MCMANYrecipe FurnaceBurnEvent");
+		
+		for(Moonfr recipe : PloRecipeList.getFurnaceRecipes())
 		{
+			//Bukkit.broadcastMessage(recipe.toString());
+			//Bukkit.broadcastMessage(recipe.getOutput().toString());
+			//Bukkit.broadcastMessage(e.getResult().toString());
 			
-			for(Moonfr recipe : PloRecipeList.getFurnaceRecipes())
+			ItemStack items = e.getSource();
+			
+			if(e.getSource().getItemMeta().hasDisplayName())
 			{
 				e.setCancelled(false);
-				//try
-				//{
+				e.setResult(new ItemStack(Material.AIR));
 				
-					//Bukkit.broadcastMessage(recipe.toString());
-					//Bukkit.broadcastMessage(recipe.getOutput().toString());
-					//Bukkit.broadcastMessage(e.getResult().toString());
+				//Bukkit.broadcastMessage("조건문 진입 (만일 버킷 등록값과 플긘 등록값이 같다면)");
+				//Bukkit.broadcastMessage(e.getSource() + " 버킷에 등록된 구워지는 자원이름");
+				//Bukkit.broadcastMessage(recipe.getsource() + " 플러그인에 등록된 구워지는 자원이름");
 				
-				ItemStack items = e.getSource();
-				
-				if(e.getSource().getItemMeta().hasDisplayName())
+				if (RecipeMatch.matches3(e.getSource(), recipe))
 				{
-					e.setResult(new ItemStack(Material.AIR));
-					/*if(RecipeMatch.hasDisname(Arrays.asList(items)))
-					{
-						e.setResult(new ItemStack(Material.AIR));
-					}*/
-					
-						//Bukkit.broadcastMessage("조건문 진입 (만일 버킷 등록값과 플긘 등록값이 같다면)");
-						//Bukkit.broadcastMessage(e.getSource() + " 버킷에 등록된 구워지는 자원이름");
-						//Bukkit.broadcastMessage(recipe.getsource() + " 플러그인에 등록된 구워지는 자원이름");
-					
-					if (RecipeMatch.matches3(e.getSource(), recipe))
-					{
-						//Bukkit.broadcastMessage("아이템 등재 성공 화로");
-						e.setResult(recipe.getOutput());
-						//Bukkit.broadcastMessage(recipe.getOutput().toString());
-						break;
-					}else
-					{
-						//Bukkit.broadcastMessage("이벤트 취소 화로");
-						e.setCancelled(true);
-					}
+					//Bukkit.broadcastMessage("아이템 등재 성공 화로");
+					e.setResult(recipe.getOutput());
+					//Bukkit.broadcastMessage(recipe.getOutput().toString());
+					break;
 				}
-			//}catch(Exception exc){}
-			
+				else
+				{
+					//Bukkit.broadcastMessage("이벤트 취소 화로");
+					e.setCancelled(true);
+				}
+			}	
 		}
-			
+		
 		
 		//Bukkit.broadcastMessage(e.getSource().toString() + "소스");
 		//Bukkit.broadcastMessage(e.getBlock().toString() + "블럭");
 		//Bukkit.broadcastMessage(e.getResult().toString() + "결과");
-		}catch(Exception exce){}
+		
 	}
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void oncraft(CraftItemEvent e)

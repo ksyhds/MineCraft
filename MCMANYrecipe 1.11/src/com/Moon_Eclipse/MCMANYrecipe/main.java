@@ -16,6 +16,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -44,13 +45,22 @@ public class main extends JavaPlugin implements Listener
 	{
 		if (sender.isOp())
 		{
+			if( args.length < 1 || args[0].equalsIgnoreCase("?") || args[0].equalsIgnoreCase("help"))
+			{	
+				if(sender.isOp())
+				{
+					sender.sendMessage("/mcrecipe 리로드");
+					sender.sendMessage("/mcrecipe 디버그");
+					sender.sendMessage("/mcrecipe 받기 플레이어이름 아이템이름 갯수");
+				}
+			}
 			if ((command.getName().equalsIgnoreCase("MCrecipe")) && (args[0].equals("리로드"))) 
 			{
 				Bukkit.resetRecipes();
 				PloRecipeList.resetrecipes();
 				reloadConfig();
 				reloaded();
-				sender.sendMessage("[mcrecipe] 문제없이 리로드 되었습니다. 버전: 1.4 [07.10]");
+				sender.sendMessage("[mcrecipe] 문제없이 리로드 되었습니다.");
 			}
 			
 			if ((command.getName().equalsIgnoreCase("MCrecipe")) && (args[0].equals("디버그")))
@@ -169,7 +179,8 @@ public class main extends JavaPlugin implements Listener
 		ShapedRecipes.clear();
 		ShapelessRecipes.clear();
 		c = this.getConfig();
-		Set<String> keys = c.getConfigurationSection("config").getKeys(false);
+		Set<String> keys = c.getConfigurationSection("config").getKeys(false);		
+	
 		if (keys == null || keys.isEmpty())
 		{
 			System.out.println("콘피그 파일에 이상이 있습니다.");

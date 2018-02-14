@@ -1,6 +1,6 @@
 name: MCMANYrecipe
 main: com.Moon_Eclipse.MCMANYrecipe.main
-version: 1.4 [07.10]
+version: 1.5 [18.02.12]
 author: Moon_Eclipse(MCMANY Mincraft Manyserver)
 
 commands:
