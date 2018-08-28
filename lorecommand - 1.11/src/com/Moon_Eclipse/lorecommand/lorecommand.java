@@ -32,6 +32,8 @@ public class lorecommand extends JavaPlugin implements Listener{
 	int seconds = 0;
 	int Cosec = 0;
 	List<String> RejectItemCode;
+	boolean debug = false;
+	
 	public void onEnable()
 	{
 		Bukkit.getPluginManager().registerEvents(this, this);
@@ -56,30 +58,28 @@ public class lorecommand extends JavaPlugin implements Listener{
 	@EventHandler
 	public void onRightclick(PlayerInteractEvent event)
 	{
+		
 		Player p = event.getPlayer();
-		Material bl = event.getMaterial();
-		if(!bl.isBlock())
-		{
-			if(!(event.getPlayer().getItemInHand().getType().toString().equals("AIR")) 
-					&& !p.isSneaking() 
-					&& (event.getAction().equals(event.getAction().RIGHT_CLICK_AIR) 
-					|| event.getAction().equals(event.getAction().RIGHT_CLICK_BLOCK) 
-					|| event.getAction().equals(event.getAction().PHYSICAL)))
-			{
-				this.Run2(p);
-			}
-			else if(!(event.getPlayer().getItemInHand().getType().toString().equals("AIR"))  
-					&& (p.isSneaking() 
-					&& event.getAction().equals(event.getAction().LEFT_CLICK_AIR) 
-					|| p.isSneaking() && event.getAction().equals(event.getAction().LEFT_CLICK_BLOCK) 
-					|| p.isSneaking() && event.getAction().equals(event.getAction().PHYSICAL)))
-			{
-				this.Run(p);
-			}
-				
-				
-		}
+		
+		Block bl = event.getClickedBlock();
 
+
+		if(!(p.getItemInHand().getType().toString().equals("AIR")) 
+				&& !p.isSneaking() 
+				&& (event.getAction().equals(event.getAction().RIGHT_CLICK_AIR) 
+				|| event.getAction().equals(event.getAction().RIGHT_CLICK_BLOCK) 
+				))
+		{
+			this.RunWhenRightClick(p);
+		}
+		else if(!(p.getItemInHand().getType().toString().equals("AIR"))  
+				&& (
+				   p.isSneaking() && event.getAction().equals(event.getAction().LEFT_CLICK_AIR) 
+				|| p.isSneaking() && event.getAction().equals(event.getAction().LEFT_CLICK_BLOCK) 
+				))
+		{
+			this.RunWhenLeftClick(p);
+		}
 	}
 	@EventHandler
 	public void ondamageevent(EntityDamageByEntityEvent event)
@@ -90,11 +90,11 @@ public class lorecommand extends JavaPlugin implements Listener{
 			
 			if(!(p.getItemInHand().getType().toString().equals("AIR"))  && p.isSneaking())
 			{
-				this.Run(p);
+				this.RunWhenLeftClick(p);
 			}
 		}
 	}
-	public void Run(Player p)
+	public void RunWhenLeftClick(Player p)
 	{
 		String playerworld = p.getWorld().getName();
 		//Bukkit.broadcastMessage("이벤트 발생");
@@ -115,108 +115,18 @@ public class lorecommand extends JavaPlugin implements Listener{
 					List<String> commands = c.getStringList(key + ".commands");
 					String consume = c.getString(key + ".consume");
 					
-
-					//Bukkit.broadcastMessage(command);
-					String lore = c.getString(key + ".lore").replace("&", "§");
-					if(item.getItemMeta().getLore().contains(lore))
+					boolean b = c.getBoolean(key + ".right");
+					if(!b)
 					{
-						List<String> worldname = c.getStringList(key + ".world");
-						
-						if(worldname.contains(playerworld))
-						{
-							seconds = c.getInt(key + ".cooldown");
-							Cosec = c.getInt(key + ".sharecooldown");
-							if(Cosec != 0)
-							{
-								if(iscooledShare.get(p.getName()))
-								{
-									if(p.getFoodLevel() >= c.getInt(key + ".hunger"))
-									{
-										//Bukkit.broadcastMessage(p.getFoodLevel()+ " < " + c.getInt(key + ".hunger") + "");
-										p.setFoodLevel(p.getFoodLevel() - c.getInt(key + ".hunger"));
-										//Bukkit.broadcastMessage(cooldowns.get(p.getName()) + " < " + (System.currentTimeMillis() - seconds*1000) + "" );
-										//Bukkit.broadcastMessage("조건문 통과");
-										
-										if(Cosec != 0)
-										{
-											this.SetShareTimer(p, Cosec);
-										}
-										
-										boolean removeOp = new Boolean(p.isOp());
-										
-										p.setOp(true);
-										for(String command : commands)
-										{
-											String pcommand = command.replaceAll("PLAYER", p.getName());
-											p.performCommand(pcommand);
-										}
-										p.setOp(removeOp);
-										if(consume.equalsIgnoreCase("yes"))
-										{
-											this.takeitem(p, 1);
-										}
-									
-									}
-									else
-									{
-										p.sendMessage("§b[마인아레나]§e 허기가 부족합니다.");
-									}
-								}
-								else
-								{
-									p.sendMessage("§b[마인아레나]§e 공용 재사용 대기시간이 " + leftsecondShare.get(p.getName()) + "s 남았습니다.");
-								}
-							}
-							
-							if(iscooled.get(p.getName() + search))
-							{
-								if(p.getFoodLevel() >= c.getInt(key + ".hunger"))
-								{
-									//Bukkit.broadcastMessage(p.getFoodLevel()+ " < " + c.getInt(key + ".hunger") + "");
-									p.setFoodLevel(p.getFoodLevel() - c.getInt(key + ".hunger"));
-									//Bukkit.broadcastMessage(cooldowns.get(p.getName()) + " < " + (System.currentTimeMillis() - seconds*1000) + "" );
-									//Bukkit.broadcastMessage("조건문 통과");
-									
-									this.SetTimer(p, seconds, search);
-									if(Cosec != 0)
-									{
-										this.SetShareTimer(p, Cosec);
-									}
-									
-									boolean removeOp = new Boolean(p.isOp());
-									
-									p.setOp(true);
-									for(String command : commands)
-									{
-										String pcommand = command.replaceAll("PLAYER", p.getName());
-										p.performCommand(pcommand);
-									}
-									p.setOp(removeOp);
-									if(consume.equalsIgnoreCase("yes"))
-									{
-										this.takeitem(p, 1);
-									}
-								
-								}
-								else
-								{
-									p.sendMessage("§b[마인아레나]§e 허기가 부족합니다.");
-								}
-							}
-							else
-							{
-								p.sendMessage("§b[마인아레나]§e 재사용 대기시간이 " + leftsecond.get(p.getName() + search)+"s 남았습니다.");
-							}
-						}
+						RunAfterCheck(p, item, playerworld, key, search, commands, consume);
 					}
 				}
 			}
 		}
 	
 	}
-	public void Run2(Player p)
+	public void RunWhenRightClick(Player p)
 	{
-
 		String playerworld = p.getWorld().getName();
 		//Bukkit.broadcastMessage("이벤트 발생");
 		ItemStack item = p.getItemInHand();
@@ -239,104 +149,83 @@ public class lorecommand extends JavaPlugin implements Listener{
 					boolean b = c.getBoolean(key + ".right");
 					if(b)
 					{
-						//Bukkit.broadcastMessage(command);
-						String lore = c.getString(key + ".lore").replace("&", "§");
-						if(item.getItemMeta().getLore().contains(lore))
-						{
-							List<String> worldname = c.getStringList(key + ".world");
-							
-							if(worldname.contains(playerworld))
-							{
-								seconds = c.getInt(key + ".cooldown");
-								Cosec = c.getInt(key + ".sharecooldown");
-								if(Cosec != 0)
-								{
-									if(iscooledShare.get(p.getName()))
-									{
-										if(p.getFoodLevel() >= c.getInt(key + ".hunger"))
-										{
-											//Bukkit.broadcastMessage(p.getFoodLevel()+ " < " + c.getInt(key + ".hunger") + "");
-											p.setFoodLevel(p.getFoodLevel() - c.getInt(key + ".hunger"));
-											//Bukkit.broadcastMessage(cooldowns.get(p.getName()) + " < " + (System.currentTimeMillis() - seconds*1000) + "" );
-											//Bukkit.broadcastMessage("조건문 통과");
-											
-											this.SetTimer(p, seconds, search);
-											if(Cosec != 0)
-											{
-												this.SetShareTimer(p, Cosec);
-											}
-											
-											boolean removeOp = new Boolean(p.isOp());
-											
-											p.setOp(true);
-											for(String command : commands)
-											{
-												String pcommand = command.replaceAll("PLAYER", p.getName());
-												p.performCommand(pcommand);
-											}
-											p.setOp(removeOp);
-											if(consume.equalsIgnoreCase("yes"))
-											{
-												this.takeitem(p, 1);
-											}
-										
-										}
-										else
-										{
-											p.sendMessage("§b[마인아레나]§e 허기가 부족합니다.");
-										}
-									}
-									else
-									{
-										p.sendMessage("§b[마인아레나]§e 공용 재사용 대기시간이 " + leftsecondShare.get(p.getName()) + "s 남았습니다.");
-									}
-								}
-								if(iscooled.get(p.getName() + search))
-								{
-									if(p.getFoodLevel() >= c.getInt(key + ".hunger"))
-									{
-										//Bukkit.broadcastMessage(p.getFoodLevel()+ " < " + c.getInt(key + ".hunger") + "");
-										p.setFoodLevel(p.getFoodLevel() - c.getInt(key + ".hunger"));
-										//Bukkit.broadcastMessage(cooldowns.get(p.getName()) + " < " + (System.currentTimeMillis() - seconds*1000) + "" );
-										//Bukkit.broadcastMessage("조건문 통과");
-										
-										this.SetTimer(p, seconds, search);
-										if(Cosec != 0)
-										{
-											this.SetShareTimer(p, Cosec);
-										}
-										
-										boolean removeOp = new Boolean(p.isOp());
-										
-										p.setOp(true);
-										for(String command : commands)
-										{
-											String pcommand = command.replaceAll("PLAYER", p.getName());
-											p.performCommand(pcommand);
-										}
-										p.setOp(removeOp);
-										if(consume.equalsIgnoreCase("yes"))
-										{
-											this.takeitem(p, 1);
-										}
-									
-									}
-									else
-									{
-										p.sendMessage("§b[마인아레나]§e 허기가 부족합니다.");
-									}
-								}
-								else
-								{
-									p.sendMessage("§b[마인아레나]§e 재사용 대기시간이 " + leftsecond.get(p.getName() + search)+"s 남았습니다.");
-								}
-							}
-						}
+						RunAfterCheck(p, item, playerworld, key, search, commands, consume);
 					}
 				}
 			}
 		}
 	
+	
+	}
+	public void RunAfterCheck(Player p, ItemStack item, String playerworld, String key, String search, List<String> commands, String consume)
+	{
+		//Bukkit.broadcastMessage(command);
+		String lore = c.getString(key + ".lore").replace("&", "§");
+		if(item.getItemMeta().getLore().contains(lore))
+		{
+			List<String> worldname = c.getStringList(key + ".world");
+			
+			if(worldname.contains(playerworld))
+			{
+				seconds = c.getInt(key + ".cooldown");
+				Cosec = c.getInt(key + ".sharecooldown");
+				if(Cosec != 0)
+				{
+					if(iscooledShare.get(p.getName()))
+					{
+						run(p, key, search, commands, consume);
+					}
+					else
+					{
+						p.sendMessage("§b[마인아레나]§e 공용 재사용 대기시간이 " + leftsecondShare.get(p.getName()) + "s 남았습니다.");
+					}
+				}
+				else if(iscooled.get(p.getName() + search))
+				{
+					run(p, key, search, commands, consume);
+				}
+				else
+				{
+					p.sendMessage("§b[마인아레나]§e 재사용 대기시간이 " + leftsecond.get(p.getName() + search)+"s 남았습니다.");
+				}
+			}
+		}
+	
+	}
+	public void run(Player p, String key, String search, List<String> commands, String consume)
+	{
+		if(p.getFoodLevel() >= c.getInt(key + ".hunger"))
+		{
+			//Bukkit.broadcastMessage(p.getFoodLevel()+ " < " + c.getInt(key + ".hunger") + "");
+			p.setFoodLevel(p.getFoodLevel() - c.getInt(key + ".hunger"));
+			//Bukkit.broadcastMessage(cooldowns.get(p.getName()) + " < " + (System.currentTimeMillis() - seconds*1000) + "" );
+			//Bukkit.broadcastMessage("조건문 통과");
+			
+			this.SetTimer(p, seconds, search);
+			if(Cosec != 0)
+			{
+				this.SetShareTimer(p, Cosec);
+			}
+			
+			boolean removeOp = new Boolean(p.isOp());
+			
+			p.setOp(true);
+			for(String command : commands)
+			{
+				String pcommand = command.replaceAll("PLAYER", p.getName());
+				p.performCommand(pcommand);
+			}
+			p.setOp(removeOp);
+			if(consume.equalsIgnoreCase("yes"))
+			{
+				this.takeitem(p, 1);
+			}
+		
+		}
+		else
+		{
+			p.sendMessage("§b[마인아레나]§e 허기가 부족합니다.");
+		}
 	
 	}
 	@EventHandler
