@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="D:/eclipse/Other Minecraft Plugins/1.11/EclipseLib.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/BUKKIT API/spigot-1.11.2.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/BUKKIT API/spigot-1.12.1.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/Other Minecraft Plugins/1.11/MCgive.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

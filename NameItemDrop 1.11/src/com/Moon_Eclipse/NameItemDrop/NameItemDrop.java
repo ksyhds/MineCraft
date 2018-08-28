@@ -23,12 +23,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.Moon_Eclipse.MCgive.main;
 import com.Moon_eclipse.EclipseLib.LibMain;
 
 public class NameItemDrop extends JavaPlugin implements Listener
@@ -127,7 +129,16 @@ public class NameItemDrop extends JavaPlugin implements Listener
 	public void onEntityDeath(EntityDeathEvent e)
 	{
 		//Bukkit.broadcastMessage("이벤트 FIRE - NID");
-		Entity entity = e.getEntity();
+		LivingEntity entity = e.getEntity();
+		
+		String PlayerName = "";
+		if(entity.getKiller() instanceof Player)
+		{
+			Player p = (Player) entity.getKiller(); 
+			//Bukkit.broadcastMessage("p.getname" + p.getName());
+			PlayerName = p.getName();
+		}
+		
 		if(entity instanceof Creature || entity instanceof Slime)
 		{
 			//Bukkit.broadcastMessage("엔티티는 크리쳐에 속함.");
@@ -165,21 +176,9 @@ public class NameItemDrop extends JavaPlugin implements Listener
 			   				if(percent <= perint)
 			   				{
 			   					String itemname = item.substring(0 , item.indexOf(","));
-			   					String target = "items." + itemname;
-			   					//Bukkit.broadcastMessage(itemname + " + itemname");
-			   					if(items.contains(target))
-			   					{
-			   						int itemid = items.getInt(target + ".id");
-					   				int amount = items.getInt(target + ".amount");
-					   				int metadata = items.getInt(target + ".metadata");
-					   				String color = items.getString(target + ".color");
-					   				String Disname = items.getString(target + ".name");
-					   				List<String> lore = items.getStringList(target + ".lore");
-					   				List<String> enchant = items.getStringList(target + ".enchants");
-					   				ItemStack dropitem = this.createItem(itemid, amount, Disname, lore, color, enchant, metadata);
-					   				dropitem = LibMain.hideFlags_Unbreak(dropitem);
-					   				newdrops.add(dropitem);
-			   					}
+			   					ItemStack dropitem = main.get_Mcgive_Item(PlayerName, itemname, 0);
+				   				dropitem = LibMain.hideFlags_Unbreak(dropitem);
+				   				newdrops.add(dropitem);
 			   				}
 			   			}
 			   			break;
