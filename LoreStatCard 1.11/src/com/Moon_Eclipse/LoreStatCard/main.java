@@ -89,413 +89,361 @@ public class main extends JavaPlugin implements Listener{
 				//p.sendMessage("우클릭 이벤트 발생.");
 				if(TargetItem.getItemMeta().hasLore())
 				{
-					ItemMeta im = CursorItem.getItemMeta();
-					ItemMeta Targetim = TargetItem.getItemMeta();
-					List<String> CursorLore = im.getLore();
-					List<String> TargetLore = Targetim.getLore();
-					Inventory inv = p.getInventory();
-					
-					if(this.isLoreStatCard(im))
-					{
-						//p.sendMessage("아이템 로어 스탯 카드임을 확인함.");
-						//p.sendMessage(e.getInventory().getName());
-						if(e.getInventory().getName().equals("container.crafting"))
+					if(TargetItem.getAmount() == 1)
+					{ 
+						
+						ItemMeta im = CursorItem.getItemMeta();
+						
+						ItemMeta Targetim = TargetItem.getItemMeta();
+						List<String> CursorLore = im.getLore();
+						List<String> TargetLore = Targetim.getLore();
+						Inventory inv = p.getInventory();
+						
+						if(this.isLoreStatCard(im))
 						{
-							//p.sendMessage("사용중인 인벤토리가 어느곳인지 확인함.");
-							if(this.TargetLoreInt(TargetLore) < TargetLore.size())
+							//p.sendMessage("아이템 로어 스탯 카드임을 확인함.");
+							//p.sendMessage(e.getInventory().getName());
+							if(e.getInventory().getName().equals("container.crafting"))
 							{
-								//p.sendMessage("로어에 교체할 문구가 있는지 체크함.");
-								String Helmet = c.getString("config.Helmet");
-								String chest = c.getString("config.chest");
-								String leggings = c.getString("config.leggings");
-								String boots = c.getString("config.boots");
-								String weapons = c.getString("config.weapons");
-								String shield = c.getString("config.shield");
-								
-								List<String> HelmetId = c.getStringList("config.HelmetId");
-								List<String> ChestId = c.getStringList("config.ChestId");
-								List<String> LeggingsId = c.getStringList("config.LeggingsId");
-								List<String> BootsId = c.getStringList("config.BootsId");
-								List<String> ShieldId = c.getStringList("config.ShieldId");
-								List<String> WeaponsId = c.getStringList("config.WeaponsId");
-								String Disname = im.getDisplayName();
-								String Disname2 = Targetim.getDisplayName();
-								
-								if(HelmetId.contains(TargetItem.getTypeId() + ""))
+								//p.sendMessage("사용중인 인벤토리가 어느곳인지 확인함.");
+								if(this.TargetLoreInt(TargetLore) < TargetLore.size())
 								{
-									if(hasString(CursorLore, Helmet))
+									//p.sendMessage("로어에 교체할 문구가 있는지 체크함.");
+									String Helmet = c.getString("config.Helmet");
+									String chest = c.getString("config.chest");
+									String leggings = c.getString("config.leggings");
+									String boots = c.getString("config.boots");
+									String weapons = c.getString("config.weapons");
+									String shield = c.getString("config.shield");
+									
+									List<String> HelmetId = c.getStringList("config.HelmetId");
+									List<String> ChestId = c.getStringList("config.ChestId");
+									List<String> LeggingsId = c.getStringList("config.LeggingsId");
+									List<String> BootsId = c.getStringList("config.BootsId");
+									List<String> ShieldId = c.getStringList("config.ShieldId");
+									List<String> WeaponsId = c.getStringList("config.WeaponsId");
+									String Disname = im.getDisplayName();
+									String Disname2 = Targetim.getDisplayName();
+									
+									e.setCancelled(true);
+									
+									if(HelmetId.contains(TargetItem.getTypeId() + ""))
 									{
-										TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));							
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-										p.sendMessage(prefix + "\"" + Disname + "§e\"" + "가§f " + "§e\"§f" + Disname2 + "§e\"" + " 에 부여되었습니다.");
+										setString(TargetLore, CursorLore, TargetItem, Helmet, p, Disname, Disname2);
+									}
+									else if(ChestId.contains(TargetItem.getTypeId() + ""))
+									{
+										setString(TargetLore, CursorLore, TargetItem, chest, p, Disname, Disname2);
+
+									}
+									else if(LeggingsId.contains(TargetItem.getTypeId() + ""))
+									{
+										setString(TargetLore, CursorLore, TargetItem, leggings, p, Disname, Disname2);
+
+									}
+									else if(BootsId.contains(TargetItem.getTypeId() + ""))
+									{
+										setString(TargetLore, CursorLore, TargetItem, boots, p, Disname, Disname2);
+
+									}
+									else if(ShieldId.contains(TargetItem.getTypeId() + ""))
+									{
+										setString(TargetLore, CursorLore, TargetItem, shield, p, Disname, Disname2);
+
+									}
+									else if(WeaponsId.contains(TargetItem.getTypeId() + ""))
+									{
+										setString(TargetLore, CursorLore, TargetItem, weapons, p, Disname, Disname2);
+
+									}
+									/*
+									switch(TargetItem.getTypeId())
+									{
+									case 298: case 302: case 306: case 310: case 314:
+										if(this.hasString(CursorLore, c.getString("config.Helmet")))
+										{
+											if(im.getDisplayName().equals(DrawOutName))
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
+											}
+											else
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
+											}									
+											Targetim.setLore(TargetLore);
+											TargetItem.setItemMeta(Targetim);
+											e.setCancelled(true);
+											this.Itemremove(e);
+											this.takeitem(p, inv, count, name);
+											p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
+											p.sendMessage(prefix + "헬멧에 적용 완료.");
+										}
+										else
+										{
+											p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
+										}
+										break;
+									case 299: case 303: case 307: case 311: case 315: case 443:
+										if(this.hasString(CursorLore, c.getString("config.chest")))
+										{
+											if(im.getDisplayName().equals(DrawOutName))
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
+											}
+											else
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
+											}									
+											Targetim.setLore(TargetLore);
+											TargetItem.setItemMeta(Targetim);
+											e.setCancelled(true);
+											this.Itemremove(e);
+											this.takeitem(p, inv, count, name);
+											p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
+											p.sendMessage(prefix + "상의에 적용완료");
+										}
+										else
+										{
+											p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
+										}
+										break;
+									case 300: case 304: case 308: case 312: case 316:
+										if(this.hasString(CursorLore, c.getString("config.leggings")))
+										{
+											if(im.getDisplayName().equals(DrawOutName))
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
+											}
+											else
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
+											}									
+											Targetim.setLore(TargetLore);
+											TargetItem.setItemMeta(Targetim);
+											e.setCancelled(true);
+											this.Itemremove(e);
+											this.takeitem(p, inv, count, name);
+											p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
+											p.sendMessage(prefix + "갑옷 하의에 적용 완료.");
+										}
+										else
+										{
+											p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
+										}
+										break;
+									case 442:
+										p.sendMessage("방패 구문으로 진입");
+										if(this.hasString(CursorLore, c.getString("config.shield")))
+										{
+											if(im.getDisplayName().equals(DrawOutName))
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
+											}
+											else
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
+											}									
+											Targetim.setLore(TargetLore);
+											TargetItem.setItemMeta(Targetim);
+											e.setCancelled(true);
+											this.Itemremove(e);
+											this.takeitem(p, inv, count, name);
+											p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
+											p.sendMessage(prefix + "방패에 적용 완료.");
+										}
+										else
+										{
+											p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
+										}
+										break;
+									case 301: case 305: case 309: case 313: case 317:
+										if(this.hasString(CursorLore, c.getString("config.boots")))
+										{
+											if(im.getDisplayName().equals(DrawOutName))
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
+											}
+											else
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
+											}									
+											Targetim.setLore(TargetLore);
+											TargetItem.setItemMeta(Targetim);
+											e.setCancelled(true);
+											this.Itemremove(e);
+											this.takeitem(p, inv, count, name);
+											p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
+											p.sendMessage(prefix + "부츠에 적용 완료.");
+										}
+										else
+										{
+											p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
+										}
+										break;
+									case 267: case 268: case 272: case 276: case 283: case 258: case 271: case 275: case 279: case 286: case 261:
+									case 256: case 290:  case 269: case 291: case 273: case 292: case 277: case 293: case 284: case 294:
+									case 257: case 270: case 274: case 278: case 285: case 346:
+										if(this.hasString(CursorLore, c.getString("config.weapons")))
+										{
+											if(im.getDisplayName().equals(DrawOutName))
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
+											}
+											else
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
+											}									
+											Targetim.setLore(TargetLore);
+											TargetItem.setItemMeta(Targetim);
+											e.setCancelled(true);
+											this.Itemremove(e);
+											this.takeitem(p, inv, count, name);
+											p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
+											p.sendMessage(prefix + "무기에 적용 완료.");
+										}
+										else if(
+												!(this.hasString(CursorLore, c.getString("config.boots")))
+												&& !(this.hasString(CursorLore, c.getString("config.leggings")))
+												&& !(this.hasString(CursorLore, c.getString("config.chest")))
+												&& !(this.hasString(CursorLore, c.getString("config.Helmet")))
+												&& !(this.hasString(CursorLore, c.getString("config.weapons")))
+												&& !(this.hasString(CursorLore, c.getString("config.tools")))
+												&& !(this.hasString(CursorLore, c.getString("config.pickaxe")))
+												)
+												
+										{
+											if(im.getDisplayName().equals(DrawOutName))
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
+											}
+											else
+											{
+												TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
+											}
+											Targetim.setLore(TargetLore);
+											TargetItem.setItemMeta(Targetim);
+											e.setCancelled(true);
+											this.Itemremove(e);
+											this.takeitem(p, inv, count, name);
+											p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
+											p.sendMessage(prefix + "무기에 적용 완료.");
+										}
+										else
+										{
+											p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
+										}
+										break;
+									}	
+									*/
+									
+									int amount = e.getCursor().getAmount();
+									if(amount == 1)
+									{
+										e.setCursor(new ItemStack(Material.AIR));
 									}
 									else
 									{
-										p.sendMessage(prefix + "올바른 장비가 아닙니다.");
+										e.getCursor().setAmount(amount - 1);
 									}
 									
-								}
-								else if(ChestId.contains(TargetItem.getTypeId() + ""))
-								{
-									if(hasString(CursorLore, chest))
-									{
-										TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));							
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-										p.sendMessage(prefix + "\"" + Disname + "§e\"" + "가§f " + "§e\"§f" + Disname2 + "§e\"" + " 에 부여되었습니다.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "올바른 장비가 아닙니다.");
-									}
-								}
-								else if(LeggingsId.contains(TargetItem.getTypeId() + ""))
-								{
-									if(hasString(CursorLore, leggings))
-									{
-										TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));							
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-										p.sendMessage(prefix + "\"" + Disname + "§e\"" + "가§f " + "§e\"§f" + Disname2 + "§e\"" + " 에 부여되었습니다.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "올바른 장비가 아닙니다.");
-									}
-								}
-								else if(BootsId.contains(TargetItem.getTypeId() + ""))
-								{
-									if(hasString(CursorLore, boots))
-									{
-										TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));							
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-										p.sendMessage(prefix + "\"" + Disname + "§e\"" + "가§f " + "§e\"§f" + Disname2 + "§e\"" + " 에 부여되었습니다.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "올바른 장비가 아닙니다.");
-									}
-								}
-								else if(ShieldId.contains(TargetItem.getTypeId() + ""))
-								{
-									if(hasString(CursorLore, shield))
-									{
-										TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));							
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-										p.sendMessage(prefix + "\"" + Disname + "§e\"" + "가§f " + "§e\"§f" + Disname2 + "§e\"" + " 에 부여되었습니다.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "올바른 장비가 아닙니다.");
-									}
-								}
-								else if(WeaponsId.contains(TargetItem.getTypeId() + ""))
-								{
-									if(hasString(CursorLore, weapons))
-									{
-										TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));							
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-										p.sendMessage(prefix + "\"" + Disname + "§e\"" + "가§f " + "§e\"§f" + Disname2 + "§e\"" + " 에 부여되었습니다.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "올바른 장비가 아닙니다.");
-									}
-								}
-								/*
-								switch(TargetItem.getTypeId())
-								{
-								case 298: case 302: case 306: case 310: case 314:
-									if(this.hasString(CursorLore, c.getString("config.Helmet")))
-									{
-										if(im.getDisplayName().equals(DrawOutName))
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
-										}
-										else
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
-										}									
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										this.takeitem(p, inv, count, name);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
-										p.sendMessage(prefix + "헬멧에 적용 완료.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
-									}
-									break;
-								case 299: case 303: case 307: case 311: case 315: case 443:
-									if(this.hasString(CursorLore, c.getString("config.chest")))
-									{
-										if(im.getDisplayName().equals(DrawOutName))
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
-										}
-										else
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
-										}									
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										this.takeitem(p, inv, count, name);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
-										p.sendMessage(prefix + "상의에 적용완료");
-									}
-									else
-									{
-										p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
-									}
-									break;
-								case 300: case 304: case 308: case 312: case 316:
-									if(this.hasString(CursorLore, c.getString("config.leggings")))
-									{
-										if(im.getDisplayName().equals(DrawOutName))
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
-										}
-										else
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
-										}									
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										this.takeitem(p, inv, count, name);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
-										p.sendMessage(prefix + "갑옷 하의에 적용 완료.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
-									}
-									break;
-								case 442:
-									p.sendMessage("방패 구문으로 진입");
-									if(this.hasString(CursorLore, c.getString("config.shield")))
-									{
-										if(im.getDisplayName().equals(DrawOutName))
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
-										}
-										else
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
-										}									
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										this.takeitem(p, inv, count, name);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
-										p.sendMessage(prefix + "방패에 적용 완료.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
-									}
-									break;
-								case 301: case 305: case 309: case 313: case 317:
-									if(this.hasString(CursorLore, c.getString("config.boots")))
-									{
-										if(im.getDisplayName().equals(DrawOutName))
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
-										}
-										else
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
-										}									
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										this.takeitem(p, inv, count, name);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
-										p.sendMessage(prefix + "부츠에 적용 완료.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
-									}
-									break;
-								case 267: case 268: case 272: case 276: case 283: case 258: case 271: case 275: case 279: case 286: case 261:
-								case 256: case 290:  case 269: case 291: case 273: case 292: case 277: case 293: case 284: case 294:
-								case 257: case 270: case 274: case 278: case 285: case 346:
-									if(this.hasString(CursorLore, c.getString("config.weapons")))
-									{
-										if(im.getDisplayName().equals(DrawOutName))
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
-										}
-										else
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
-										}									
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										this.takeitem(p, inv, count, name);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
-										p.sendMessage(prefix + "무기에 적용 완료.");
-									}
-									else if(
-											!(this.hasString(CursorLore, c.getString("config.boots")))
-											&& !(this.hasString(CursorLore, c.getString("config.leggings")))
-											&& !(this.hasString(CursorLore, c.getString("config.chest")))
-											&& !(this.hasString(CursorLore, c.getString("config.Helmet")))
-											&& !(this.hasString(CursorLore, c.getString("config.weapons")))
-											&& !(this.hasString(CursorLore, c.getString("config.tools")))
-											&& !(this.hasString(CursorLore, c.getString("config.pickaxe")))
-											)
-											
-									{
-										if(im.getDisplayName().equals(DrawOutName))
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(0));
-										}
-										else
-										{
-											TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));
-										}
-										Targetim.setLore(TargetLore);
-										TargetItem.setItemMeta(Targetim);
-										e.setCancelled(true);
-										this.Itemremove(e);
-										this.takeitem(p, inv, count, name);
-										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
-										p.sendMessage(prefix + "무기에 적용 완료.");
-									}
-									else
-									{
-										p.sendMessage(prefix + "사용 가능한 부위에 적용해 주세요.");
-									}
-									break;
 								}	
-								*/
-							}	
-						}
-						else
-						{
-							p.sendMessage(prefix + "해당 인벤토리에서는 사용할 수 없습니다.");
-						}
-					}	
-					if(this.isRemoveItem(im))
-					{
-						if(e.getInventory().getName().equals("container.crafting"))
-						{
-							int i = 0;
-							for(String lore : TargetLore)
+							}
+							else
 							{
-								if(lore.contains(drawsearchword))
+								p.sendMessage(prefix + "해당 인벤토리에서는 사용할 수 없습니다.");
+							}
+						}	
+						if(this.isRemoveItem(im))
+						{
+							if(e.getInventory().getName().equals("container.crafting"))
+							{
+								int i = 0;
+								for(String lore : TargetLore)
 								{
-									e.setCancelled(true);
-									TargetLore.set(i, SoketString);
-									Targetim.setLore(TargetLore);
-									TargetItem.setItemMeta(Targetim);
-									p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 2);
-									p.sendMessage(prefix + "소켓을 초기화 했습니다.");
-									this.Itemremove(e);
-									break;
+									if(lore.contains(drawsearchword))
+									{
+										e.setCancelled(true);
+										TargetLore.set(i, SoketString);
+										Targetim.setLore(TargetLore);
+										TargetItem.setItemMeta(Targetim);
+										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 2);
+										p.sendMessage(prefix + "소켓을 초기화 했습니다.");
+										this.Itemremove(e);
+										break;
+									}
+									i += 1;
 								}
-								i += 1;
+							}
+							else
+							{
+								p.sendMessage(prefix + "해당 인벤토리에서는 사용할 수 없습니다.");
 							}
 						}
-						else
+						if(this.isExRemoveItem(im))
 						{
-							p.sendMessage(prefix + "해당 인벤토리에서는 사용할 수 없습니다.");
+							if(e.getInventory().getName().equals("container.crafting"))
+							{
+								int i = 0;
+								int s = 0;
+								for(String lore : TargetLore)
+								{
+									if(lore.contains(drawsearchword) && s == 1)
+									{
+										e.setCancelled(true);
+										TargetLore.set(i, ExSoketString);
+										Targetim.setLore(TargetLore);
+										TargetItem.setItemMeta(Targetim);
+										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 2);
+										p.sendMessage(prefix + "소켓을 초기화 했습니다.");
+										this.Itemremove(e);
+										break;
+									}
+									else if (lore.contains(drawsearchword))
+									{
+										s += 1;
+									}
+									i += 1;
+								}
+							}
+							else
+							{
+								p.sendMessage(prefix + "해당 인벤토리에서는 사용할 수 없습니다.");
+							}
+						}
+						if(this.isDrawItem(im))
+						{
+							if(e.getInventory().getName().equals("container.crafting"))
+							{
+								int i = 0;
+								for(String lore : TargetLore)
+								{
+									if(lore.contains(drawsearchword))
+									{
+										int code = CursorItem.getTypeId();
+										int meta = CursorItem.getData().getData();
+										String Disname3 = DrawOutName;
+										e.setCancelled(true);
+										TargetLore.set(i, SoketString);
+										Targetim.setLore(TargetLore);
+										TargetItem.setItemMeta(Targetim);
+										p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 2);
+										p.sendMessage(prefix + "소켓의 추출에 성공했습니다.");
+										this.Itemremove(e);
+										this.AddItem(p, inv, code, meta, 1, Disname3, lore);
+										break;
+									}
+									i += 1;
+								}
+							}
+							else
+							{
+								p.sendMessage(prefix + "해당 인벤토리에서는 사용할 수 없습니다.");
+							}
 						}
 					}
-					if(this.isExRemoveItem(im))
+					else
 					{
-						if(e.getInventory().getName().equals("container.crafting"))
-						{
-							int i = 0;
-							int s = 0;
-							for(String lore : TargetLore)
-							{
-								if(lore.contains(drawsearchword) && s == 1)
-								{
-									e.setCancelled(true);
-									TargetLore.set(i, ExSoketString);
-									Targetim.setLore(TargetLore);
-									TargetItem.setItemMeta(Targetim);
-									p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 2);
-									p.sendMessage(prefix + "소켓을 초기화 했습니다.");
-									this.Itemremove(e);
-									break;
-								}
-								else if (lore.contains(drawsearchword))
-								{
-									s += 1;
-								}
-								i += 1;
-							}
-						}
-						else
-						{
-							p.sendMessage(prefix + "해당 인벤토리에서는 사용할 수 없습니다.");
-						}
-					}
-					if(this.isDrawItem(im))
-					{
-						if(e.getInventory().getName().equals("container.crafting"))
-						{
-							int i = 0;
-							for(String lore : TargetLore)
-							{
-								if(lore.contains(drawsearchword))
-								{
-									int code = CursorItem.getTypeId();
-									int meta = CursorItem.getData().getData();
-									String Disname3 = DrawOutName;
-									e.setCancelled(true);
-									TargetLore.set(i, SoketString);
-									Targetim.setLore(TargetLore);
-									TargetItem.setItemMeta(Targetim);
-									p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 2);
-									p.sendMessage(prefix + "소켓의 추출에 성공했습니다.");
-									this.Itemremove(e);
-									this.AddItem(p, inv, code, meta, 1, Disname3, lore);
-									break;
-								}
-								i += 1;
-							}
-						}
-						else
-						{
-							p.sendMessage(prefix + "해당 인벤토리에서는 사용할 수 없습니다.");
-						}
+						p.sendMessage(prefix + "1개 이상의 아이템에 적용할 수 없습니다.");
 					}
 				}
 			}
@@ -583,18 +531,6 @@ public class main extends JavaPlugin implements Listener{
 		}
 		return re;
 		
-	}
-	public void Itemremove(InventoryClickEvent e)
-	{
-		int amount = e.getCursor().getAmount();
-		if(amount == 1)
-		{
-			e.setCursor(new ItemStack(Material.AIR));
-		}
-		else
-		{
-			e.getCursor().setAmount(amount - 1);
-		}
 	}
 	public void takeitem( Player p, Inventory inv, int count, String name)
 	{
@@ -702,5 +638,33 @@ public class main extends JavaPlugin implements Listener{
 		this.reloadConfig();
 		c = this.getConfig();
 		sender.sendMessage("LoreStatCard 문제없이 리로드 되었습니다.");
+	}
+	public void setString(List<String> TargetLore, List<String> CursorLore, ItemStack item, String Key, Player p, String Disname, String Disname2)
+	{
+		ItemMeta im = item.getItemMeta();
+		if(hasString(CursorLore, Key))
+		{
+			TargetLore.set(this.TargetLoreInt(TargetLore), CursorLore.get(c.getInt("config.getlorenum") - 1));							
+			im.setLore(TargetLore);
+			item.setItemMeta(im);
+			p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
+			p.sendMessage(prefix + "\"" + Disname + "§e\"" + "가§f " + "§e\"§f" + Disname2 + "§e\"" + " 에 부여되었습니다.");
+		}
+		else
+		{
+			p.sendMessage(prefix + "올바른 장비가 아닙니다.");
+		}
+	}
+	public void Itemremove(InventoryClickEvent e)
+	{
+		int amount = e.getCursor().getAmount();
+		if(amount == 1)
+		{
+			e.setCursor(new ItemStack(Material.AIR));
+		}
+		else
+		{
+			e.getCursor().setAmount(amount - 1);
+		}
 	}
 }

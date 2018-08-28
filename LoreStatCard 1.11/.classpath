@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/eclipse/BUKKIT API/spigot-api-1.11.2-R0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/BUKKIT API/spigot-api-1.12.1-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
