@@ -20,6 +20,7 @@ config:
       - '&f'
       - '&4[교환 불가]'
       - '&a- &fPLAYER님의 귀속 아이템 입니다.'
+    URL: 'http://textures.minecraft.net/texture/527ad51dd773b72dca1c13e6f3547a83181aad91165282999bbdf13a3b3c9'
     ing1:
       name: '&aASD'
       id: 1

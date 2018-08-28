@@ -43,23 +43,23 @@ public class PloRecipe {
 		ShapedRecipe rec = new ShapedRecipe(output);
 		rec.shape("ABC","DEF","GHI");
 		if (slot1.getType() != Material.AIR)
-		rec.setIngredient('A',slot1.getType(), slot1.getData().getData());
+		rec.setIngredient('A',slot1.getType(), slot1.getDurability());
 		if (slot2.getType() != Material.AIR)
-		rec.setIngredient('B',slot2.getType(), slot2.getData().getData());
+		rec.setIngredient('B',slot2.getType(), slot2.getDurability());
 		if (slot3.getType() != Material.AIR)
-		rec.setIngredient('C',slot3.getType(), slot3.getData().getData());
+		rec.setIngredient('C',slot3.getType(), slot3.getDurability());
 		if (slot4.getType() != Material.AIR)
-		rec.setIngredient('D',slot4.getType(), slot4.getData().getData());
+		rec.setIngredient('D',slot4.getType(), slot4.getDurability());
 		if (slot5.getType() != Material.AIR)
-		rec.setIngredient('E',slot5.getType(), slot5.getData().getData());
+		rec.setIngredient('E',slot5.getType(), slot5.getDurability());
 		if (slot6.getType() != Material.AIR)
-		rec.setIngredient('F',slot6.getType(), slot6.getData().getData());
+		rec.setIngredient('F',slot6.getType(), slot6.getDurability());
 		if (slot7.getType() != Material.AIR)
-		rec.setIngredient('G',slot7.getType(), slot7.getData().getData());
+		rec.setIngredient('G',slot7.getType(), slot7.getDurability());
 		if (slot8.getType() != Material.AIR)
-		rec.setIngredient('H',slot8.getType(), slot8.getData().getData());
+		rec.setIngredient('H',slot8.getType(), slot8.getDurability());
 		if (slot9.getType() != Material.AIR)
-		rec.setIngredient('I',slot9.getType(), slot9.getData().getData());
+		rec.setIngredient('I',slot9.getType(), slot9.getDurability());
 		Bukkit.addRecipe(rec);
 		PloRecipeList.addShapedRecipe(this);
 
@@ -68,68 +68,68 @@ public class PloRecipe {
 		ShapedRecipe rec = new ShapedRecipe(output);
 		rec.shape("ABC","DEF","GHI");
 		if (slot1.getType() != Material.AIR)
-		rec.setIngredient('A',slot1.getType(), slot1.getData().getData());
+		rec.setIngredient('A',slot1.getType(), slot1.getDurability());
 		if (slot2.getType() != Material.AIR)
-		rec.setIngredient('B',slot2.getType(), slot2.getData().getData());
+		rec.setIngredient('B',slot2.getType(), slot2.getDurability());
 		if (slot3.getType() != Material.AIR)
-		rec.setIngredient('C',slot3.getType(), slot3.getData().getData());
+		rec.setIngredient('C',slot3.getType(), slot3.getDurability());
 		if (slot4.getType() != Material.AIR)
-		rec.setIngredient('D',slot4.getType(), slot4.getData().getData());
+		rec.setIngredient('D',slot4.getType(), slot4.getDurability());
 		if (slot5.getType() != Material.AIR)
-		rec.setIngredient('E',slot5.getType(), slot5.getData().getData());
+		rec.setIngredient('E',slot5.getType(), slot5.getDurability());
 		if (slot6.getType() != Material.AIR)
-		rec.setIngredient('F',slot6.getType(), slot6.getData().getData());
+		rec.setIngredient('F',slot6.getType(), slot6.getDurability());
 		if (slot7.getType() != Material.AIR)
-		rec.setIngredient('G',slot7.getType(), slot7.getData().getData());
+		rec.setIngredient('G',slot7.getType(), slot7.getDurability());
 		if (slot8.getType() != Material.AIR)
-		rec.setIngredient('H',slot8.getType(), slot8.getData().getData());
+		rec.setIngredient('H',slot8.getType(), slot8.getDurability());
 		if (slot9.getType() != Material.AIR)
 		rec.setIngredient('I',slot9.getType(), slot9.getData().getData());
 		Bukkit.addRecipe(rec);
 		PloRecipeList.addShapedRecipe(this);
 	}
 	public PloRecipe setSlot1(ItemStack i){
-		i.setAmount(1);
+		i.setAmount(0);
 		this.slot1 = i;
 		return this;
 	}
 	public PloRecipe setSlot2(ItemStack i){
-		i.setAmount(1);
+		i.setAmount(0);
 		this.slot2 = i;
 		return this;
 	}
 	public PloRecipe setSlot3(ItemStack i){
-		i.setAmount(1);
+		i.setAmount(0);
 		this.slot3 = i;
 		return this;
 	}
 	public PloRecipe setSlot4(ItemStack i){
-		i.setAmount(1);
+		i.setAmount(0);
 		this.slot4 = i;
 		return this;
 	}
 	public PloRecipe setSlot5(ItemStack i){
-		i.setAmount(1);
+		i.setAmount(0);
 		this.slot5 = i;
 		return this;
 	}
 	public PloRecipe setSlot6(ItemStack i){
-		i.setAmount(1);
+		i.setAmount(0);
 		this.slot6 = i;
 		return this;
 	}
 	public PloRecipe setSlot7(ItemStack i){
-		i.setAmount(1);
+		i.setAmount(0);
 		this.slot7 = i;
 		return this;
 	}
 	public PloRecipe setSlot8(ItemStack i){
-		i.setAmount(1);
+		i.setAmount(0);
 		this.slot8 = i;
 		return this;
 	}
 	public PloRecipe setSlot9(ItemStack i){
-		i.setAmount(1);
+		i.setAmount(0);
 		this.slot9 = i;
 		return this;
 	}

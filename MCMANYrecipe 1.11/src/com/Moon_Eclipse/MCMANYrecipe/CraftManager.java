@@ -226,25 +226,26 @@ public class CraftManager implements Listener {
 				
 				for(ItemStack item : main.ShapedRecipes.keySet())
 				{
-					if(item.equals(Output))
+					//Bukkit.broadcastMessage("레시피 아이템 이름: " + item.getItemMeta().getDisplayName());
+					//Bukkit.broadcastMessage("출력 아이템: " + Output.toString());
+					//Bukkit.broadcastMessage(item.toString());
+					//Bukkit.broadcastMessage(Output.toString());
+					if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("레시피의 출력과 서버 출력이 일치함");}
+					
+					ItemStack[] RecipeItems = main.ShapedRecipes.get(item);
+					if(ingShapedMatch(RecipeItems, CraftItems, CraftItems.length))
 					{
-						if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("레시피의 출력과 서버 출력이 일치함");}
-						//Bukkit.broadcastMessage(item.toString());
-						//Bukkit.broadcastMessage(output.toString());
-						ItemStack[] RecipeItems = main.ShapedRecipes.get(item);
-						if(ingShapedMatch(RecipeItems, CraftItems))
-						{
-							event.getInventory().setResult(LibMain.hideFlags_Unbreak(item));
-							if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("셰입이 매치하므로 아이템 설정");}
-							return;
-							
-						}
-						else
-						{
-							if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("셰입이 매치하지 않으므로 아이템 지움");}
-							event.getInventory().setResult(new ItemStack(Material.AIR));
-						}
+						event.getInventory().setResult(item);
+						if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("셰입이 매치하므로 아이템 설정");}
+						return;
+						
 					}
+					else
+					{
+						if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("셰입이 매치하지 않으므로 아이템 지움");}
+						event.getInventory().setResult(new ItemStack(Material.AIR));
+					}
+
 				}
 				for(ItemStack item : main.ShapelessRecipes.keySet())
 				{
@@ -254,7 +255,7 @@ public class CraftManager implements Listener {
 						ItemStack[] RecipeItems = main.ShapelessRecipes.get(item);
 						if(ingShapelessMatch(RecipeItems, CraftItems))
 						{
-							event.getInventory().setResult(LibMain.hideFlags_Unbreak(item));
+							event.getInventory().setResult(item);
 							if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("셰입이 매치하므로 아이템 설정");}
 							return;
 						}
@@ -333,49 +334,33 @@ public class CraftManager implements Listener {
 		//Bukkit.broadcastMessage(e.getResult().toString() + "결과");
 		
 	}
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void oncraft(CraftItemEvent e)
 	{
 		ItemStack output = e.getCurrentItem();
+	
 		if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("이벤트 형식" + e.getAction().toString());}
 		if(e.isShiftClick() || e.getAction().toString().equalsIgnoreCase("MOVE_TO_OTHER_INVENTORY"))
 		{
-			/*
-			ItemStack Temp_item = LibMain.ReCreateItem(output);			
-			if(main.ShapedRecipes.keySet().contains(Temp_item))
-			{
-				if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("형식 있는 조합에서 이벤트 캔슬");}
-				e.setCancelled(true);
-			}
-			else if(main.ShapelessRecipes.keySet().contains(Temp_item))
-			{
-				if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("형식 없는 조합에서 이벤트 캔슬");}
-				e.setCancelled(true);
-			}
-			*/
 			e.setCancelled(true);
 		}
 		else
 		{
 			Player p = (Player) e.getWhoClicked();
-			try
+			ItemStack is = output;
+			ItemMeta im = is.getItemMeta();
+			ArrayList<String> ls = new ArrayList<String>();
+			//Bukkit.broadcastMessage(im.getLore().size() + "<< 가지고있는 로어의 수량");
+			for(int i = 0 ; i < im.getLore().size() ; i++)
 			{
-				ItemStack is = output;
-				ItemMeta im = is.getItemMeta();
-				ArrayList<String> ls = new ArrayList<String>();
-				//Bukkit.broadcastMessage(im.getLore().size() + "<< 가지고있는 로어의 수량");
-				for(int i = 0 ; i < im.getLore().size() ; i++)
-				{
-						String s = im.getLore().get(i).replaceAll("PLAYER", p.getName());
-						ls.add(s);
-				}
+					String s = im.getLore().get(i).replaceAll("PLAYER", p.getName());
+					ls.add(s);
+			}
 			im.setLore(ls);
 			//Bukkit.broadcastMessage(ls.toString());
 			is.setItemMeta(im);
-			}catch(Exception e1){}
 			
-			e.setCurrentItem(LibMain.hideFlags_Unbreak(output));
-			
+			e.setCurrentItem(LibMain.hideFlags_Unbreak(is));
 		}
 	}
 	@EventHandler
@@ -406,19 +391,51 @@ public class CraftManager implements Listener {
 		}
 		return b;
 	}
-	public boolean ingShapedMatch(ItemStack[] recipe, ItemStack[] craft)
+	public boolean ingShapedMatch(ItemStack[] recipe, ItemStack[] craft, int invSize)
 	{
+		if(main.Debug()){Bukkit.getPlayer("Moon_Eclipse").sendMessage("invSize: " + invSize);}
+		//Bukkit.broadcastMessage("-----------------------------------------------");
 		boolean b = true;
-		for(int i = 0 ; i < 9 ; i++ )
+		for(int i = 0 ; i < invSize ; i++ )
 		{
-			if(recipe[i].hasItemMeta() && recipe[i].getItemMeta().hasDisplayName())
+			//Bukkit.broadcastMessage( i + "번째");
+			//Bukkit.broadcastMessage("recipe " + i + ": " + recipe[i].toString());
+			//Bukkit.broadcastMessage("craft " + i + ": " + craft[i].toString());
+			
+			if(recipe[i].hasItemMeta() && craft[i].hasItemMeta() )
 			{
-				String name1 = recipe[i].getItemMeta().getDisplayName();
-				String name2 = craft[i].getItemMeta().getDisplayName();
-				if(!name1.equals(name2))
+				if(recipe[i].getItemMeta().hasDisplayName()&& craft[i].getItemMeta().hasDisplayName())
 				{
-					b = false;
+					
+					
+					String name1 = recipe[i].getItemMeta().getDisplayName();
+					String name2 = craft[i].getItemMeta().getDisplayName();
+					if(!name1.equals(name2))
+					{
+						// 만약 두 아이템의 metadata값이 일치한다면
+						if(recipe[i].getDurability() == craft[i].getDurability())
+						{
+							b = false;
+						}
+					}
+					
 				}
+				else
+				{
+					return false;
+				}
+			}
+			else if (recipe[i].hasItemMeta() && !craft[i].hasItemMeta())
+			{
+				return false;
+			}
+			else if (!recipe[i].hasItemMeta() && craft[i].hasItemMeta())
+			{
+				return false;
+			}
+			else if(!recipe[i].hasItemMeta() && !craft[i].hasItemMeta())
+			{
+				continue;
 			}
 		}
 
@@ -474,7 +491,7 @@ public class CraftManager implements Listener {
 				ItemMeta im = item.getItemMeta();
 				if(im.hasDisplayName())
 				{
-					String name = im.getDisplayName();
+					String name = im.getDisplayName() + ":" + item.getDurability();
 					RecipeNames.put(name, 0);
 					CraftNames.put(name, 0);
 				}
@@ -487,7 +504,7 @@ public class CraftManager implements Listener {
 				ItemMeta im = item.getItemMeta();
 				if(im.hasDisplayName())
 				{
-					String name = im.getDisplayName();
+					String name = im.getDisplayName() + ":" + item.getDurability();
 					RecipeNames.put(name, 0);
 					CraftNames.put(name, 0);
 				}
@@ -501,7 +518,7 @@ public class CraftManager implements Listener {
 				ItemMeta im = item.getItemMeta();
 				if(im.hasDisplayName())
 				{
-					String name = im.getDisplayName();
+					String name = im.getDisplayName() + ":" + item.getDurability();
 					RecipeNames.put(name, RecipeNames.get(name)+1);
 				}
 			}
@@ -514,7 +531,7 @@ public class CraftManager implements Listener {
 				ItemMeta im = item.getItemMeta();
 				if(im.hasDisplayName())
 				{
-					String name = im.getDisplayName();
+					String name = im.getDisplayName() + ":" + item.getDurability();
 					CraftNames.put(name, CraftNames.get(name)+1);
 				}
 			}

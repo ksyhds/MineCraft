@@ -1,12 +1,15 @@
 package com.Moon_Eclipse.MCMANYrecipe;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
+import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -23,7 +26,12 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.Moon_eclipse.EclipseLib.LibMain;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 
 public class main extends JavaPlugin implements Listener
 {
@@ -108,7 +116,7 @@ public class main extends JavaPlugin implements Listener
 							    String s2 = s.replaceAll("PLAYER", sender.getName());
 							    lore.set(i, s2);
 						    }
-						    ItemStack is = createItem(c.getInt(key + ".id"), c.getInt(key + ".meta"), getamount, c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"));
+						    ItemStack is = createItem(c.getInt(key + ".id"), c.getInt(key + ".meta"), getamount, c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"), c.getString(key + ".URL"));
 						    targetPlayer.getInventory().addItem(is);
 				    	}
 				    	else
@@ -133,9 +141,11 @@ public class main extends JavaPlugin implements Listener
 	    }
 	    return true;
 	}
-	public ItemStack createItem(int typeId,int metadata, int amount, String name, List<String> lore, String color, List<String> enchants)
+	public ItemStack createItem(int typeId, int metadata,  int amount, String name, List<String> lore, String color, List<String> enchants, String SkullURL)
 	{
-		ItemStack i = new ItemStack(typeId, amount,(short) metadata);
+		ItemStack i = new ItemStack(typeId);
+		i.setDurability((short) metadata);
+		i.setAmount(amount);
 		ItemMeta im = i.getItemMeta();
 		String ColorHex = color;
 		try
@@ -150,6 +160,20 @@ public class main extends JavaPlugin implements Listener
 		im.setLore(lore);
 		i.setItemMeta(im);
 		Random rnd = new Random();
+		
+		if(i.getType().equals(Material.SKULL))
+		{
+			ItemStack new_itemstack = LibMain.getSkull(SkullURL,name);
+			new_itemstack.setDurability((short) metadata);
+			new_itemstack.setAmount(amount);
+			
+			SkullMeta skull_meta = (SkullMeta) new_itemstack.getItemMeta();
+			skull_meta.setLore(im.getLore());
+			skull_meta.setDisplayName(name);
+			new_itemstack.setItemMeta(skull_meta);
+			i = new_itemstack;
+		}
+		
 		if(!(enchants.isEmpty()))
 		{
 			for(String enchant : enchants)
@@ -160,6 +184,7 @@ public class main extends JavaPlugin implements Listener
 				i.addUnsafeEnchantment(Enchantment.getById(enchantname), level);
 			}
 		}
+		i = LibMain.hideFlags_Unbreak(i);
 		return i;
 	}
 	public ItemStack createItem2(int typeId, String name, int damage)
@@ -197,7 +222,7 @@ public class main extends JavaPlugin implements Listener
 			}
 			if(c.getString(key +".shape").equals("shape"))
 			{			
-				ItemStack item = this.createItem(c.getInt(key + ".id"), c.getInt(key + ".metadata"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"));
+				ItemStack item = this.createItem(c.getInt(key + ".id"), c.getInt(key + ".metadata"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"), c.getString(key + ".URL"));
 				PloRecipe pl = new PloRecipe(item);
 
 				
@@ -257,12 +282,13 @@ public class main extends JavaPlugin implements Listener
 				}
 				ItemStack[] items = {ing1, ing2, ing3, ing4, ing5, ing6, ing7, ing8, ing9};
 				ShapedRecipes.put(item, items);
-				pl.register2();	
+				pl.register();	
+				
 			}
 			if(c.getString(key +".shape").equals("shapeless"))
 			{
 				
-				ItemStack item = this.createItem(c.getInt(key + ".id"), c.getInt(key + ".metadata"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"));
+				ItemStack item = this.createItem(c.getInt(key + ".id"), c.getInt(key + ".metadata"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"), c.getString(key + ".URL"));
 				MoonShapeLessRecipe pl = new MoonShapeLessRecipe(item);
 				
 				ItemStack ing1 = new ItemStack(0);
@@ -329,14 +355,14 @@ public class main extends JavaPlugin implements Listener
 			{
 				if(c.getString(key +".override").equals("true"))
 				{
-					Moonfr pl = new Moonfr(this.createItem(c.getInt(key + ".id"), c.getInt(key + ".meta"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants")));
+					Moonfr pl = new Moonfr(this.createItem(c.getInt(key + ".id"), c.getInt(key + ".meta"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"), c.getString(key + ".URL")));
 					if(c.getInt(key + ".ing1.id") != 0){pl.addsource(this.createItem2(c.getInt(key + ".ing1.id"), c.getString(key + ".ing1.name").replace("&", "§"), c.getInt(key + ".ing1.metadata")));}
 					pl.register2();
 				}
 				else if(c.getString(key +".override").equals("false"))
 				{
 					if(c.getString(key +".override").equals("on")){};
-					Moonfr pl = new Moonfr(this.createItem(c.getInt(key + ".id"), c.getInt(key + ".meta"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants")));
+					Moonfr pl = new Moonfr(this.createItem(c.getInt(key + ".id"), c.getInt(key + ".meta"), c.getInt(key + ".amount"), c.getString(key + ".name").replace("&", "§"), lore, c.getString(key + ".color"), c.getStringList(key + ".enchants"), c.getString(key + ".URL")));
 					if(c.getInt(key + ".ing1.id") != 0){pl.addsource(this.createItem2(c.getInt(key + ".ing1.id"), c.getString(key + ".ing1.name").replace("&", "§"), c.getInt(key + ".ing1.metadata")));}
 					pl.register();
 				}
@@ -347,4 +373,5 @@ public class main extends JavaPlugin implements Listener
 	{
 		return debug;
 	}
+
 }
