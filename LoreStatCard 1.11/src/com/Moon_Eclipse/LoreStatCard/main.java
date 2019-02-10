@@ -82,6 +82,7 @@ public class main extends JavaPlugin implements Listener{
 		//p.sendMessage("클릭 이벤트 발생.");
 		ItemStack CursorItem = e.getCursor();
 		ItemStack TargetItem = e.getCurrentItem();
+				
 		if(e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR)
 		{
 			if(e.getClick().equals(ClickType.RIGHT) && TargetItem.getTypeId() != 0 && CursorItem.getTypeId() != 0)
@@ -125,36 +126,37 @@ public class main extends JavaPlugin implements Listener{
 									String Disname = im.getDisplayName();
 									String Disname2 = Targetim.getDisplayName();
 									
+									
+									
 									e.setCancelled(true);
 									
 									if(HelmetId.contains(TargetItem.getTypeId() + ""))
 									{
-										setString(TargetLore, CursorLore, TargetItem, Helmet, p, Disname, Disname2);
+										setString(TargetLore, CursorLore, TargetItem, Helmet, p, Disname, Disname2, e);
 									}
 									else if(ChestId.contains(TargetItem.getTypeId() + ""))
 									{
-										setString(TargetLore, CursorLore, TargetItem, chest, p, Disname, Disname2);
+										setString(TargetLore, CursorLore, TargetItem, chest, p, Disname, Disname2, e);
 
 									}
 									else if(LeggingsId.contains(TargetItem.getTypeId() + ""))
 									{
-										setString(TargetLore, CursorLore, TargetItem, leggings, p, Disname, Disname2);
+										setString(TargetLore, CursorLore, TargetItem, leggings, p, Disname, Disname2, e);
 
 									}
 									else if(BootsId.contains(TargetItem.getTypeId() + ""))
 									{
-										setString(TargetLore, CursorLore, TargetItem, boots, p, Disname, Disname2);
+										setString(TargetLore, CursorLore, TargetItem, boots, p, Disname, Disname2, e);
 
 									}
 									else if(ShieldId.contains(TargetItem.getTypeId() + ""))
 									{
-										setString(TargetLore, CursorLore, TargetItem, shield, p, Disname, Disname2);
+										setString(TargetLore, CursorLore, TargetItem, shield, p, Disname, Disname2, e);
 
 									}
 									else if(WeaponsId.contains(TargetItem.getTypeId() + ""))
 									{
-										setString(TargetLore, CursorLore, TargetItem, weapons, p, Disname, Disname2);
-
+										setString(TargetLore, CursorLore, TargetItem, weapons, p, Disname, Disname2, e);
 									}
 									/*
 									switch(TargetItem.getTypeId())
@@ -335,17 +337,7 @@ public class main extends JavaPlugin implements Listener{
 										break;
 									}	
 									*/
-									
-									int amount = e.getCursor().getAmount();
-									if(amount == 1)
-									{
-										e.setCursor(new ItemStack(Material.AIR));
-									}
-									else
-									{
-										e.getCursor().setAmount(amount - 1);
-									}
-									
+
 								}	
 							}
 							else
@@ -639,7 +631,7 @@ public class main extends JavaPlugin implements Listener{
 		c = this.getConfig();
 		sender.sendMessage("LoreStatCard 문제없이 리로드 되었습니다.");
 	}
-	public void setString(List<String> TargetLore, List<String> CursorLore, ItemStack item, String Key, Player p, String Disname, String Disname2)
+	public void setString(List<String> TargetLore, List<String> CursorLore, ItemStack item, String Key, Player p, String Disname, String Disname2, InventoryClickEvent e)
 	{
 		ItemMeta im = item.getItemMeta();
 		if(hasString(CursorLore, Key))
@@ -648,7 +640,20 @@ public class main extends JavaPlugin implements Listener{
 			im.setLore(TargetLore);
 			item.setItemMeta(im);
 			p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-			p.sendMessage(prefix + "\"" + Disname + "§e\"" + "가§f " + "§e\"§f" + Disname2 + "§e\"" + " 에 부여되었습니다.");
+			p.sendMessage("§b[마인아레나]§e 보주가 성공적으로 장착되었습니다");
+			
+			
+			int amount = e.getCursor().getAmount();
+			if(amount == 1)
+			{
+				e.setCursor(new ItemStack(Material.AIR));
+			}
+			else
+			{
+				e.getCursor().setAmount(amount - 1);
+			}
+		
+			
 		}
 		else
 		{
